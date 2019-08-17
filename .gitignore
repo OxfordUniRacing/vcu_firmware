@@ -1,0 +1,6 @@
+*.swp
+*.zip
+*.atzip
+Debug/
+Release/
+openocd.cfg
