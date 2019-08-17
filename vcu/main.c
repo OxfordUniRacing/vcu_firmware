@@ -3,6 +3,7 @@
 
 #include "usb_drive.h"
 #include "usb_init.h"
+#include "log/msglog.h"
 
 static void CAN_0_tx_callback(struct can_async_descriptor *const descr) {
 	gpio_toggle_pin_level(PIN_PC8);
@@ -62,6 +63,15 @@ static void can_task(void *p) {
 	}
 }
 
+static void test_task(void *unused) {
+	(void) unused;
+
+	while (1) {
+		log_debug("tick");
+		vTaskDelay(100);
+	}
+}
+
 int main(void) {
 	hri_matrix_write_CCFG_CAN0_CAN0DMABA_bf(MATRIX, (uint32_t)0x2042);
 
@@ -95,6 +105,9 @@ int main(void) {
 	//can_task(0);
 
 	//xTaskCreate(can_task, "", 1024, NULL, 1, NULL);
+	
+	log_init();
+	xTaskCreate(test_task, "test", 1024, NULL, tskIDLE_PRIORITY + 1, NULL);
 
 	vTaskStartScheduler();
 }
