@@ -43,12 +43,14 @@
       <RTE_Components_h>#define ATMEL_START</RTE_Components_h>
       <files>
         <file category="doc" condition="ARMCC, GCC, IAR" name="hal/documentation/can_async.rst"/>
+        <file category="doc" condition="ARMCC, GCC, IAR" name="hal/documentation/flash.rst"/>
         <file category="doc" condition="ARMCC, GCC, IAR" name="hal/documentation/mci_os.rst"/>
         <file category="doc" condition="ARMCC, GCC, IAR" name="hal/documentation/usart_os.rst"/>
         <file category="doc" condition="ARMCC, GCC, IAR" name="hal/documentation/usb_device_async.rst"/>
         <file category="header" condition="ARMCC, GCC, IAR" name="hal/include/hal_atomic.h"/>
         <file category="header" condition="ARMCC, GCC, IAR" name="hal/include/hal_can_async.h"/>
         <file category="header" condition="ARMCC, GCC, IAR" name="hal/include/hal_delay.h"/>
+        <file category="header" condition="ARMCC, GCC, IAR" name="hal/include/hal_flash.h"/>
         <file category="header" condition="ARMCC, GCC, IAR" name="hal/include/hal_gpio.h"/>
         <file category="header" condition="ARMCC, GCC, IAR" name="hal/include/hal_init.h"/>
         <file category="header" condition="ARMCC, GCC, IAR" name="hal/include/hal_io.h"/>
@@ -61,6 +63,7 @@
         <file category="header" condition="ARMCC, GCC, IAR" name="hal/include/hpl_delay.h"/>
         <file category="header" condition="ARMCC, GCC, IAR" name="hal/include/hpl_dma.h"/>
         <file category="header" condition="ARMCC, GCC, IAR" name="hal/include/hpl_ext_irq.h"/>
+        <file category="header" condition="ARMCC, GCC, IAR" name="hal/include/hpl_flash.h"/>
         <file category="header" condition="ARMCC, GCC, IAR" name="hal/include/hpl_gpio.h"/>
         <file category="header" condition="ARMCC, GCC, IAR" name="hal/include/hpl_init.h"/>
         <file category="header" condition="ARMCC, GCC, IAR" name="hal/include/hpl_irq.h"/>
@@ -74,6 +77,7 @@
         <file category="source" condition="ARMCC, GCC, IAR" name="hal/src/hal_atomic.c"/>
         <file category="source" condition="ARMCC, GCC, IAR" name="hal/src/hal_can_async.c"/>
         <file category="source" condition="ARMCC, GCC, IAR" name="hal/src/hal_delay.c"/>
+        <file category="source" condition="ARMCC, GCC, IAR" name="hal/src/hal_flash.c"/>
         <file category="source" condition="ARMCC, GCC, IAR" name="hal/src/hal_gpio.c"/>
         <file category="source" condition="ARMCC, GCC, IAR" name="hal/src/hal_init.c"/>
         <file category="source" condition="ARMCC, GCC, IAR" name="hal/src/hal_io.c"/>
@@ -180,6 +184,7 @@
         <file category="source" condition="ARMCC, GCC, IAR" name="hpl/core/hpl_core_m7_base.c"/>
         <file category="header" condition="ARMCC, GCC, IAR" name="hpl/core/hpl_core_port.h"/>
         <file category="source" condition="ARMCC, GCC, IAR" name="hpl/core/hpl_init.c"/>
+        <file category="source" condition="ARMCC, GCC, IAR" name="hpl/efc/hpl_efc.c"/>
         <file category="source" condition="ARMCC, GCC, IAR" name="hpl/hsmci/hpl_hsmci.c"/>
         <file category="source" condition="ARMCC, GCC, IAR" name="hpl/mcan/hpl_mcan.c"/>
         <file category="header" condition="ARMCC, GCC, IAR" name="hpl/mcan/hpl_mcan.h"/>
@@ -197,6 +202,7 @@
         <file category="header" condition="ARMCC, GCC, IAR" name="sd_mmc_start.h"/>
         <file category="header" condition="ARMCC, GCC, IAR" name="atmel_start.h"/>
         <file category="source" condition="ARMCC, GCC, IAR" name="atmel_start.c"/>
+        <file attr="config" category="header" condition="ARMCC, GCC, IAR" name="config/hpl_efc_config.h"/>
         <file attr="config" category="header" condition="ARMCC, GCC, IAR" name="config/hpl_hsmci_config.h"/>
         <file attr="config" category="header" condition="ARMCC, GCC, IAR" name="config/hpl_mcan_config.h"/>
         <file attr="config" category="header" condition="ARMCC, GCC, IAR" name="config/hpl_pmc_config.h"/>
@@ -214,6 +220,7 @@
         <file category="include" condition="ARMCC, GCC, IAR" name="hpl/core"/>
         <file category="include" condition="ARMCC, GCC, IAR" name="hpl/hsmci"/>
         <file category="include" condition="ARMCC, GCC, IAR" name="hpl/mcan"/>
+        <file category="include" condition="ARMCC, GCC, IAR" name="hpl/nvmctrl"/>
         <file category="include" condition="ARMCC, GCC, IAR" name="hpl/pio"/>
         <file category="include" condition="ARMCC, GCC, IAR" name="hpl/pmc"/>
         <file category="include" condition="ARMCC, GCC, IAR" name="hpl/usart"/>

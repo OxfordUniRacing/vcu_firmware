@@ -34,58 +34,19 @@
 #ifndef _ASSERT_H_INCLUDED
 #define _ASSERT_H_INCLUDED
 
+#include "compiler.h"
+
 #ifdef __cplusplus
 extern "C" {
 #endif
 
-#include <compiler.h>
-
-#ifndef USE_SIMPLE_ASSERT
-//# define USE_SIMPLE_ASSERT
-#endif
-
-/**
- * \brief Assert macro
- *
- * This macro is used to throw asserts. It can be mapped to different function
- * based on debug level.
- *
- * \param[in] condition A condition to be checked;
- *                      assert is thrown if the given condition is false
- */
-#define ASSERT(condition) ASSERT_IMPL((condition), __FILE__, __LINE__)
-
-#ifdef DEBUG
-
-#ifdef USE_SIMPLE_ASSERT
-#define ASSERT_IMPL(condition, file, line)                                                                             \
-	if (!(condition))                                                                                                  \
-		__asm("BKPT #0");
+#ifdef NDEBUG
+#define ASSERT(__e) ((void)0)
 #else
-#define ASSERT_IMPL(condition, file, line) assert((condition), file, line)
+#define ASSERT(__e) ((__e) ? (void)0 : assert_failed(__FILE__, __LINE__))
 #endif
 
-#else /* DEBUG */
-
-#ifdef USE_SIMPLE_ASSERT
-#define ASSERT_IMPL(condition, file, line) ((void)0)
-#else
-#define ASSERT_IMPL(condition, file, line) ((void)0)
-#endif
-
-#endif /* DEBUG */
-
-/**
- * \brief Assert function
- *
- * This function is used to throw asserts.
- *
- * \param[in] condition A condition to be checked; assert is thrown if the given
- *                      condition is false
- * \param[in] file File name
- * \param[in] line Line number
- */
-void assert(const bool condition, const char *const file, const int line);
+void assert_failed(const char *const file, const int line);
 
 #ifdef __cplusplus
 }

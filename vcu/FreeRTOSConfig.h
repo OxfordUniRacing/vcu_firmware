@@ -4,14 +4,9 @@
 
 // <<< Use Configuration Wizard in Context Menu >>>
 
-#if defined(__GNUC__) || defined(__ICCARM__)
-/* Important: put #includes here unless they are also meant for the assembler.
- */
 #include <stdint.h>
-void assert_triggered(const char *file, uint32_t line);
-#endif
-
 #include <peripheral_clk_config.h>
+#include <utils_assert.h>
 
 // <h> Basic
 
@@ -287,12 +282,7 @@ to exclude the API function. */
 
 /* Normal assert() semantics without relying on the provision of an assert.h
 header file. */
-#define configASSERT(x)                                                                                                \
-	if ((x) == 0) {                                                                                                    \
-		taskDISABLE_INTERRUPTS();                                                                                      \
-		for (;;)                                                                                                       \
-			;                                                                                                          \
-	}
+#define configASSERT(x) ASSERT(x)
 
 /* Definitions that map the FreeRTOS port interrupt handlers to their CMSIS
 standard names - or at least those used in the unmodified vector table. */

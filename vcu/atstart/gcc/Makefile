@@ -37,9 +37,10 @@ hpl/usart \
 sd_mmc \
 hal/src \
 hpl/hsmci \
+hpl/mcan \
 hpl/usbhs \
 hpl/xdmac \
-hpl/mcan \
+hpl/efc \
 hal/utils/src \
 same70b/gcc/gcc \
 examples \
@@ -58,6 +59,7 @@ hpl/usart/hpl_usart.o \
 usb/class/cdc/device/cdcdf_acm.o \
 hal/utils/src/utils_syscalls.o \
 usb/class/msc/device/mscdf.o \
+hpl/efc/hpl_efc.o \
 hal/src/hal_delay.o \
 hpl/usbhs/hpl_usbhs.o \
 hpl/core/hpl_init.o \
@@ -66,9 +68,10 @@ hal/src/hal_usart_os.o \
 hal/utils/src/utils_assert.o \
 usb_start.o \
 hpl/mcan/hpl_mcan.o \
+usb/usb_protocol.o \
 hpl/pmc/hpl_pmc.o \
 hal/src/hal_mci_os.o \
-usb/usb_protocol.o \
+hal/src/hal_flash.o \
 hal/src/hal_init.o \
 hal/src/hal_usb_device.o \
 main.o \
@@ -97,6 +100,7 @@ OBJS_AS_ARGS +=  \
 "usb/class/cdc/device/cdcdf_acm.o" \
 "hal/utils/src/utils_syscalls.o" \
 "usb/class/msc/device/mscdf.o" \
+"hpl/efc/hpl_efc.o" \
 "hal/src/hal_delay.o" \
 "hpl/usbhs/hpl_usbhs.o" \
 "hpl/core/hpl_init.o" \
@@ -105,9 +109,10 @@ OBJS_AS_ARGS +=  \
 "hal/utils/src/utils_assert.o" \
 "usb_start.o" \
 "hpl/mcan/hpl_mcan.o" \
+"usb/usb_protocol.o" \
 "hpl/pmc/hpl_pmc.o" \
 "hal/src/hal_mci_os.o" \
-"usb/usb_protocol.o" \
+"hal/src/hal_flash.o" \
 "hal/src/hal_init.o" \
 "hal/src/hal_usb_device.o" \
 "main.o" \
@@ -137,6 +142,7 @@ DIR_INCLUDES +=  \
 -I"../hpl/core" \
 -I"../hpl/hsmci" \
 -I"../hpl/mcan" \
+-I"../hpl/nvmctrl" \
 -I"../hpl/pio" \
 -I"../hpl/pmc" \
 -I"../hpl/usart" \
@@ -162,6 +168,7 @@ DIR_INCLUDES +=  \
 DEPS := $(OBJS:%.o=%.d)
 
 DEPS_AS_ARGS +=  \
+"usb/usb_protocol.d" \
 "hal/utils/src/utils_event.d" \
 "hal/src/hal_io.d" \
 "hal/src/hal_can_async.d" \
@@ -170,6 +177,7 @@ DEPS_AS_ARGS +=  \
 "usb/class/cdc/device/cdcdf_acm.d" \
 "sd_mmc_start.d" \
 "hpl/xdmac/hpl_xdmac.d" \
+"hpl/efc/hpl_efc.d" \
 "same70b/gcc/gcc/startup_same70q21b.d" \
 "usb/class/msc/device/mscdf.d" \
 "hal/src/hal_usart_os.d" \
@@ -179,7 +187,7 @@ DEPS_AS_ARGS +=  \
 "hpl/usbhs/hpl_usbhs.d" \
 "hal/src/hal_delay.d" \
 "hpl/core/hpl_init.d" \
-"usb/usb_protocol.d" \
+"hal/src/hal_flash.d" \
 "hal/src/hal_mci_os.d" \
 "hal/src/hal_usb_device.d" \
 "hal/src/hal_init.d" \

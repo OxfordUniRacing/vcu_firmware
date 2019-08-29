@@ -20,8 +20,8 @@ static void log_uart_task(void *);
 
 void log_init() {
 	msglog_buffer = xStreamBufferCreate(4096, 1);
-
-	xTaskCreate(log_uart_task, "log_uart", 1024, NULL, tskIDLE_PRIORITY + 2, NULL);
+	NVIC_SetPriority(USART1_IRQn, 7);
+	xTaskCreate(log_uart_task, "log_uart", 1024, NULL, tskIDLE_PRIORITY + 1, NULL);
 }
 
 void log_log(int level, const char *fmt, ...) {
@@ -80,8 +80,6 @@ static void log_uart_task(void *unused) {
 
 	struct io_descriptor *io;
 	usart_os_get_io(&USART_EDBG, &io);
-
-	log_info("Log started");
 
 	static uint8_t buf[256];
 	while (1) {

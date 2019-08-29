@@ -21,6 +21,8 @@ extern "C" {
 #include <hal_io.h>
 #include <hal_sleep.h>
 
+#include <hal_flash.h>
+
 #include <hal_mci_os.h>
 
 #include <hal_usart_os.h>
@@ -31,12 +33,17 @@ extern "C" {
 
 #define USART_EDBG_BUFFER_SIZE 16
 
+extern struct flash_descriptor FLASH;
+
 extern struct mci_os_desc IO_BUS;
 
 extern struct usart_os_descriptor USART_EDBG;
 extern uint8_t                    USART_EDBG_buffer[];
 
 extern struct can_async_descriptor CAN_0;
+
+void FLASH_init(void);
+void FLASH_CLOCK_init(void);
 
 void IO_BUS_PORT_init(void);
 void IO_BUS_CLOCK_init(void);

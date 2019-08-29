@@ -16,6 +16,8 @@
 extern "C" {
 #endif
 
+void FLASH_example(void);
+
 void task_usart_edbg_create();
 
 void CAN_0_example(void);

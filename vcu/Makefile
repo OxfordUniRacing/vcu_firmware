@@ -13,7 +13,6 @@ else
 endif
 
 # Compile flags
-DEFS += -DUSE_SIMPLE_ASSERT=1
 CPPFLAGS += -MD -MP
 CFLAGS += -Wall -Wextra -Wmissing-prototypes -Wstrict-prototypes
 CFLAGS += -fno-common -ffunction-sections -fdata-sections -std=gnu99
@@ -48,6 +47,7 @@ atstart/usb \
 atstart/sd_mmc \
 atstart \
 fatfs \
+eeprom \
 log \
 .
 
@@ -68,6 +68,7 @@ atstart/sd_mmc \
 atstart/diskio \
 atstart \
 fatfs \
+eeprom \
 log \
 .
 
@@ -75,14 +76,17 @@ log \
 SRC_EXCLUDES := \
 atstart/rtos_start.c \
 atstart/usb_start.c \
-atstart/main.c
+atstart/main.c \
+atstart/hal/utils/src/utils_assert.c \
+./main.c
 
 INCS := $(INC_DIRS:%=-I%)
 SRCS := $(foreach dir,$(SRC_DIRS),$(wildcard $(dir)/*.c))
 SRCS := $(filter-out $(SRC_EXCLUDES),$(SRCS))
 OBJS := $(SRCS:%.c=$(BUILD_DIR)/%.o)
 DEPS := $(OBJS:.o=.d)
-OUT_DIRS := $(SRC_DIRS:%=$(BUILD_DIR)/%)
+TESTS := $(wildcard test/*.c)
+OUT_DIRS := $(SRC_DIRS:%=$(BUILD_DIR)/%) $(BUILD_DIR)/test
 
 PREFIX ?= arm-none-eabi-
 CC := $(PREFIX)gcc
@@ -96,7 +100,12 @@ ifneq ($(V),1)
 Q := @
 endif
 
-all: $(OUT_DIRS) $(BUILD_DIR)/$(OUTPUT_FILE_NAME).elf
+all: patch $(OUT_DIRS) $(BUILD_DIR)/$(OUTPUT_FILE_NAME).elf
+
+test: patch $(OUT_DIRS) $(TESTS:%.c=$(BUILD_DIR)/%.elf)
+
+patch:
+	$(Q)rm -f atstart/hal/utils/include/utils_assert.h
 
 $(OUT_DIRS):
 	$(Q)"mkdir" -p $(@)
@@ -109,21 +118,25 @@ $(BUILD_DIR)/atstart/hpl/usbhs/hpl_usbhs.o: atstart/hpl/usbhs/hpl_usbhs.c
 	@printf "  CC      $(<)\n"
 	$(Q)$(CC) -include memcpy_usb.h $(CPPFLAGS) $(DEFS) $(INCS) $(CFLAGS) $(ARCH_FLAGS) -o $(@) -c $(<)
 
-$(BUILD_DIR)/%.elf: $(OBJS)
+$(BUILD_DIR)/$(OUTPUT_FILE_NAME).elf: $(OBJS) $(BUILD_DIR)/main.o
 	@printf "  LD      $(@)\n"
-	$(Q)$(LD) -o $(@) $(^) -Wl,-Map="$(BUILD_DIR)/$(*).map" $(LDFLAGS) $(ARCH_FLAGS)
-	@printf "  OBJCOPY $(*).bin\n"
-	$(Q)$(OBJCOPY) -O binary $(@) $(BUILD_DIR)/$(*).bin
-	@printf "  OBJCOPY $(*).hex\n"
-	$(Q)$(OBJCOPY) -O ihex $(@) $(BUILD_DIR)/$(*).hex
+	$(Q)$(LD) -o $(@) $(^) -Wl,-Map="$(@:.elf=.map)" $(LDFLAGS) $(ARCH_FLAGS)
+	@printf "  OBJCOPY $(@:.elf=.bin)\n"
+	$(Q)$(OBJCOPY) -O binary $(@) $(@:.elf=.bin)
+	@printf "  OBJCOPY $(@:.elf=.hex)\n"
+	$(Q)$(OBJCOPY) -O ihex $(@) $(@:.elf=.hex)
 	$(Q)$(CC) --version
 	$(Q)$(SIZE) $(@)
+
+$(BUILD_DIR)/test/%.elf: $(OBJS) $(BUILD_DIR)/test/%.o
+	@printf "  LD      $(@)\n"
+	$(Q)$(LD) -o $(@) $(^) $(LDFLAGS) $(ARCH_FLAGS)
 
 clean:
 	@printf "  CLEAN\n"
 	$(Q)rm -rf $(BUILD_DIR)
 
-.PHONY: all clean
+.PHONY: all test clean patch
 .SECONDARY:
 
 -include $(DEPS)

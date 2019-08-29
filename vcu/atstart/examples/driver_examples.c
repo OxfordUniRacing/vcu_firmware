@@ -10,6 +10,31 @@
 #include "driver_init.h"
 #include "utils.h"
 
+static uint8_t src_data[IFLASH_PAGE_SIZE];
+static uint8_t chk_data[IFLASH_PAGE_SIZE];
+
+/**
+ * Example of using FLASH to read and write buffer.
+ */
+void FLASH_example(void)
+{
+	uint32_t page_size;
+	uint16_t i;
+
+	/* Init source data */
+	page_size = flash_get_page_size(&FLASH);
+
+	for (i = 0; i < page_size; i++) {
+		src_data[i] = i;
+	}
+
+	/* Write data to flash */
+	flash_write(&FLASH, 0x3200, src_data, page_size);
+
+	/* Read data from flash */
+	flash_read(&FLASH, 0x3200, chk_data, page_size);
+}
+
 #define TASK_USART_EDBG_STACK_SIZE (300 / sizeof(portSTACK_TYPE))
 #define TASK_USART_EDBG_STACK_PRIORITY (tskIDLE_PRIORITY + 1)
 

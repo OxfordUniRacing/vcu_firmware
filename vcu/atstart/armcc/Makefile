@@ -35,9 +35,10 @@ hpl/usart \
 sd_mmc \
 hal/src \
 hpl/hsmci \
+hpl/mcan \
 hpl/usbhs \
 hpl/xdmac \
-hpl/mcan \
+hpl/efc \
 hal/utils/src \
 examples \
 usb \
@@ -55,6 +56,7 @@ hpl/usart/hpl_usart.o \
 usb/class/cdc/device/cdcdf_acm.o \
 usb/class/msc/device/mscdf.o \
 same70b/armcc/Device/Source/system_same70q21b.o \
+hpl/efc/hpl_efc.o \
 hal/src/hal_delay.o \
 hpl/usbhs/hpl_usbhs.o \
 hpl/core/hpl_init.o \
@@ -63,9 +65,10 @@ hal/src/hal_usart_os.o \
 hal/utils/src/utils_assert.o \
 usb_start.o \
 hpl/mcan/hpl_mcan.o \
+usb/usb_protocol.o \
 hpl/pmc/hpl_pmc.o \
 hal/src/hal_mci_os.o \
-usb/usb_protocol.o \
+hal/src/hal_flash.o \
 hal/src/hal_init.o \
 hal/src/hal_usb_device.o \
 main.o \
@@ -93,6 +96,7 @@ OBJS_AS_ARGS +=  \
 "usb/class/cdc/device/cdcdf_acm.o" \
 "usb/class/msc/device/mscdf.o" \
 "same70b/armcc/Device/Source/system_same70q21b.o" \
+"hpl/efc/hpl_efc.o" \
 "hal/src/hal_delay.o" \
 "hpl/usbhs/hpl_usbhs.o" \
 "hpl/core/hpl_init.o" \
@@ -101,9 +105,10 @@ OBJS_AS_ARGS +=  \
 "hal/utils/src/utils_assert.o" \
 "usb_start.o" \
 "hpl/mcan/hpl_mcan.o" \
+"usb/usb_protocol.o" \
 "hpl/pmc/hpl_pmc.o" \
 "hal/src/hal_mci_os.o" \
-"usb/usb_protocol.o" \
+"hal/src/hal_flash.o" \
 "hal/src/hal_init.o" \
 "hal/src/hal_usb_device.o" \
 "main.o" \
@@ -126,6 +131,7 @@ OBJS_AS_ARGS +=  \
 DEPS := $(OBJS:%.o=%.d)
 
 DEPS_AS_ARGS +=  \
+"usb/usb_protocol.d" \
 "hal/utils/src/utils_event.d" \
 "hal/src/hal_io.d" \
 "hal/src/hal_can_async.d" \
@@ -133,6 +139,7 @@ DEPS_AS_ARGS +=  \
 "usb/class/cdc/device/cdcdf_acm.d" \
 "sd_mmc_start.d" \
 "hpl/xdmac/hpl_xdmac.d" \
+"hpl/efc/hpl_efc.d" \
 "usb/class/msc/device/mscdf.d" \
 "same70b/armcc/Device/Source/system_same70q21b.d" \
 "hal/src/hal_usart_os.d" \
@@ -142,7 +149,7 @@ DEPS_AS_ARGS +=  \
 "hpl/usbhs/hpl_usbhs.d" \
 "hal/src/hal_delay.d" \
 "hpl/core/hpl_init.d" \
-"usb/usb_protocol.d" \
+"hal/src/hal_flash.d" \
 "hal/src/hal_mci_os.d" \
 "hal/src/hal_usb_device.d" \
 "hal/src/hal_init.d" \
@@ -197,7 +204,7 @@ $(OBJS_AS_ARGS)
 	@echo Building file: $<
 	@echo ARMCC Compiler
 	$(QUOTE)armcc$(QUOTE) --c99 -c -DDEBUG -O1 -g --apcs=interwork --split_sections --cpu Cortex-M7.fp.dp -D__SAME70Q21B__ \
--I"../" -I"../config" -I"../examples" -I"../hal/include" -I"../hal/utils/include" -I"../hpl/core" -I"../hpl/hsmci" -I"../hpl/mcan" -I"../hpl/pio" -I"../hpl/pmc" -I"../hpl/usart" -I"../hpl/usbhs" -I"../hpl/xdmac" -I"../hri" -I"../" -I"../config" -I"../usb" -I"../usb/class/cdc" -I"../usb/class/cdc/device" -I"../usb/class/msc" -I"../usb/class/msc/device" -I"../usb/device" -I"../" -I"../config" -I"../sd_mmc" -I"../" -I"../CMSIS/Core/Include" -I"../same70b/include"  \
+-I"../" -I"../config" -I"../examples" -I"../hal/include" -I"../hal/utils/include" -I"../hpl/core" -I"../hpl/hsmci" -I"../hpl/mcan" -I"../hpl/nvmctrl" -I"../hpl/pio" -I"../hpl/pmc" -I"../hpl/usart" -I"../hpl/usbhs" -I"../hpl/xdmac" -I"../hri" -I"../" -I"../config" -I"../usb" -I"../usb/class/cdc" -I"../usb/class/cdc/device" -I"../usb/class/msc" -I"../usb/class/msc/device" -I"../usb/device" -I"../" -I"../config" -I"../sd_mmc" -I"../" -I"../CMSIS/Core/Include" -I"../same70b/include"  \
 --depend "$@"  -o "$@" "$<"
 
 	@echo Finished building: $<
@@ -206,7 +213,7 @@ $(OBJS_AS_ARGS)
 	@echo Building file: $<
 	@echo ARMCC Assembler
 	$(QUOTE)armasm$(QUOTE) -g --apcs=interwork --cpu Cortex-M7.fp.dp --pd "D__SAME70Q21B__ SETA 1" \
--I"../" -I"../config" -I"../examples" -I"../hal/include" -I"../hal/utils/include" -I"../hpl/core" -I"../hpl/hsmci" -I"../hpl/mcan" -I"../hpl/pio" -I"../hpl/pmc" -I"../hpl/usart" -I"../hpl/usbhs" -I"../hpl/xdmac" -I"../hri" -I"../" -I"../config" -I"../usb" -I"../usb/class/cdc" -I"../usb/class/cdc/device" -I"../usb/class/msc" -I"../usb/class/msc/device" -I"../usb/device" -I"../" -I"../config" -I"../sd_mmc" -I"../" -I"../CMSIS/Core/Include" -I"../same70b/include"  \
+-I"../" -I"../config" -I"../examples" -I"../hal/include" -I"../hal/utils/include" -I"../hpl/core" -I"../hpl/hsmci" -I"../hpl/mcan" -I"../hpl/nvmctrl" -I"../hpl/pio" -I"../hpl/pmc" -I"../hpl/usart" -I"../hpl/usbhs" -I"../hpl/xdmac" -I"../hri" -I"../" -I"../config" -I"../usb" -I"../usb/class/cdc" -I"../usb/class/cdc/device" -I"../usb/class/msc" -I"../usb/class/msc/device" -I"../usb/device" -I"../" -I"../config" -I"../sd_mmc" -I"../" -I"../CMSIS/Core/Include" -I"../same70b/include"  \
 --depend "$(@:%.o=%.d)" -o "$@" "$<"
 
 	@echo Finished building: $<
@@ -215,7 +222,7 @@ $(OBJS_AS_ARGS)
 	@echo Building file: $<
 	@echo ARMCC Preprocessing Assembler
 	$(QUOTE)armcc$(QUOTE) --c99 -c -DDEBUG -O1 -g --apcs=interwork --split_sections --cpu Cortex-M7.fp.dp -D__SAME70Q21B__ \
--I"../" -I"../config" -I"../examples" -I"../hal/include" -I"../hal/utils/include" -I"../hpl/core" -I"../hpl/hsmci" -I"../hpl/mcan" -I"../hpl/pio" -I"../hpl/pmc" -I"../hpl/usart" -I"../hpl/usbhs" -I"../hpl/xdmac" -I"../hri" -I"../" -I"../config" -I"../usb" -I"../usb/class/cdc" -I"../usb/class/cdc/device" -I"../usb/class/msc" -I"../usb/class/msc/device" -I"../usb/device" -I"../" -I"../config" -I"../sd_mmc" -I"../" -I"../CMSIS/Core/Include" -I"../same70b/include"  \
+-I"../" -I"../config" -I"../examples" -I"../hal/include" -I"../hal/utils/include" -I"../hpl/core" -I"../hpl/hsmci" -I"../hpl/mcan" -I"../hpl/nvmctrl" -I"../hpl/pio" -I"../hpl/pmc" -I"../hpl/usart" -I"../hpl/usbhs" -I"../hpl/xdmac" -I"../hri" -I"../" -I"../config" -I"../usb" -I"../usb/class/cdc" -I"../usb/class/cdc/device" -I"../usb/class/msc" -I"../usb/class/msc/device" -I"../usb/device" -I"../" -I"../config" -I"../sd_mmc" -I"../" -I"../CMSIS/Core/Include" -I"../same70b/include"  \
 --depend "$@"  -o "$@" "$<"
 
 	@echo Finished building: $<

@@ -166,6 +166,23 @@ middlewares:
       Write Protect 0: null
       Card Detect 0: CARD_DETECT_0
 drivers:
+  FLASH:
+    user_label: FLASH
+    definition: Atmel:SAME70B_Drivers:0.0.1::ATSAME70Q21B-AN::EFC::driver_config_definition::Flash::HAL:Driver:FLASH
+    functionality: Flash
+    api: HAL:Driver:FLASH
+    configuration:
+      conf_flash_erasing_blk_size: 8K bytes
+      conf_flash_op_buf_loc: STATIC
+      conf_flash_page_size: 512 bytes
+      conf_flash_rewr_unalign_op: false
+      conf_flash_rewrite_enable: true
+      conf_flash_unalign_append_enable: true
+      conf_flash_unalign_erase_enable: true
+    optional_signals: []
+    variant: null
+    clocks:
+      domain_group: null
   IO_BUS:
     user_label: IO_BUS
     definition: Atmel:SAME70B_Drivers:0.0.1::ATSAME70Q21B-AN::HSMCI::driver_config_definition::MCI::HAL:Driver:MCI.RTOS.Beta

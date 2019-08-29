@@ -67,7 +67,7 @@ static void test_task(void *unused) {
 	(void) unused;
 
 	while (1) {
-		log_debug("tick");
+		log_debug("x");
 		vTaskDelay(100);
 	}
 }

@@ -23,10 +23,22 @@
 
 struct can_async_descriptor CAN_0;
 
+struct flash_descriptor FLASH;
+
 struct mci_os_desc IO_BUS;
 
 struct usart_os_descriptor USART_EDBG;
 uint8_t                    USART_EDBG_buffer[USART_EDBG_BUFFER_SIZE];
+
+void FLASH_CLOCK_init(void)
+{
+}
+
+void FLASH_init(void)
+{
+	FLASH_CLOCK_init();
+	flash_init(&FLASH, EFC);
+}
 
 void IO_BUS_PORT_init(void)
 {
@@ -353,6 +365,8 @@ void system_init(void)
 	                       GPIO_PULL_OFF);
 
 	gpio_set_pin_function(CARD_DETECT_0, GPIO_PIN_FUNCTION_OFF);
+
+	FLASH_init();
 
 	IO_BUS_init();
 

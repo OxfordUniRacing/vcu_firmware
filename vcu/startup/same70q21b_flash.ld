@@ -38,8 +38,9 @@ SEARCH_DIR(.)
 /* Memory Spaces Definitions */
 MEMORY
 {
-    rom (rx)    : ORIGIN = 0x00400000, LENGTH = 0x00200000 /* rom, 2097152K */
+    rom (rx)    : ORIGIN = 0x00400000, LENGTH = 0x001fc000 /* rom, 2097152K */
     ram (rwx)   : ORIGIN = 0x20400000, LENGTH = 0x00060000 /* ram, 393216K */
+    eeprom      : ORIGIN = 0x005fc000, LENGTH = 0x00004000 /* eeprom emulation area */
 }
 
 /* The stack size used by the application. NOTE: you need to adjust according to your application. */
@@ -157,4 +158,9 @@ SECTIONS
     . = ALIGN(4);
     _end = . ;
     _ram_end_ = ORIGIN(ram) + LENGTH(ram) - 1 ;
+    
+    .eeprom (NOLOAD):
+    {
+        *(.eeprom .eeprom.*);
+    } > eeprom
 }
