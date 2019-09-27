@@ -1,6 +1,7 @@
 #ifndef MSGLOG_H
 #define MSGLOG_H
 
+#include "FreeRTOS.h"
 #include "stream_buffer.h"
 
 enum { LOG_ERROR, LOG_WARN, LOG_INFO, LOG_DEBUG };

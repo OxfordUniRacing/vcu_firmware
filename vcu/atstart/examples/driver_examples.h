@@ -18,6 +18,10 @@ extern "C" {
 
 void FLASH_example(void);
 
+void task_uart_mc_1_create();
+
+void task_uart_mc_2_create();
+
 void task_usart_edbg_create();
 
 void CAN_0_example(void);

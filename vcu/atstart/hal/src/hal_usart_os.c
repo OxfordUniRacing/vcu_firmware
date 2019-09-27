@@ -61,7 +61,7 @@ int32_t usart_os_init(struct usart_os_descriptor *const descr, void *const hw, u
                       uint16_t rx_buffer_length, void *const func)
 {
 	int32_t rc;
-	ASSERT(descr && hw && rx_buffer && rx_buffer_length);
+	ASSERT(descr && hw && rx_buffer && func);
 
 	if (ERR_NONE != ringbuffer_init(&descr->rx, rx_buffer, rx_buffer_length)) {
 		return ERR_INVALID_ARG;
@@ -76,7 +76,8 @@ int32_t usart_os_init(struct usart_os_descriptor *const descr, void *const hw, u
 		sem_deinit(&descr->tx_sem);
 		return rc;
 	}
-	rc = _usart_async_init(&descr->device, hw);
+	descr->func = (struct _usart_async_hpl_interface *)func;
+	rc          = descr->func->async_init(&descr->device, hw);
 
 	if (rc) {
 		sem_deinit(&descr->tx_sem);
@@ -96,8 +97,8 @@ int32_t usart_os_init(struct usart_os_descriptor *const descr, void *const hw, u
 	descr->device.usart_cb.rx_done_cb   = usart_os_fill_rx_buffer;
 	descr->device.usart_cb.tx_done_cb   = usart_os_transmission_complete;
 	descr->device.usart_cb.error_cb     = usart_os_error;
-	_usart_async_set_irq_state(&descr->device, USART_ASYNC_RX_DONE, true);
-	_usart_async_set_irq_state(&descr->device, USART_ASYNC_ERROR, true);
+	descr->func->async_set_irq_state(&descr->device, USART_ASYNC_RX_DONE, true);
+	descr->func->async_set_irq_state(&descr->device, USART_ASYNC_ERROR, true);
 
 	return ERR_NONE;
 }
@@ -108,7 +109,7 @@ int32_t usart_os_init(struct usart_os_descriptor *const descr, void *const hw, u
 int32_t usart_os_deinit(struct usart_os_descriptor *const descr)
 {
 	ASSERT(descr);
-	_usart_async_deinit(&descr->device);
+	descr->func->async_deinit(&descr->device);
 	descr->io.read  = NULL;
 	descr->io.write = NULL;
 
@@ -121,7 +122,7 @@ int32_t usart_os_deinit(struct usart_os_descriptor *const descr)
 int32_t usart_os_enable(struct usart_os_descriptor *const descr)
 {
 	ASSERT(descr);
-	_usart_async_enable(&descr->device);
+	descr->func->async_enable(&descr->device);
 
 	return ERR_NONE;
 }
@@ -129,7 +130,7 @@ int32_t usart_os_enable(struct usart_os_descriptor *const descr)
 int32_t usart_os_disable(struct usart_os_descriptor *const descr)
 {
 	ASSERT(descr);
-	_usart_async_disable(&descr->device);
+	descr->func->async_disable(&descr->device);
 
 	return ERR_NONE;
 }
@@ -151,7 +152,7 @@ int32_t usart_os_get_io(struct usart_os_descriptor *const descr, struct io_descr
 int32_t usart_os_set_flow_control(struct usart_os_descriptor *const descr, const union usart_flow_control_state state)
 {
 	ASSERT(descr);
-	_usart_async_set_flow_control_state(&descr->device, state);
+	descr->func->async_set_flow_control_state(&descr->device, state);
 
 	return ERR_NONE;
 }
@@ -162,7 +163,7 @@ int32_t usart_os_set_flow_control(struct usart_os_descriptor *const descr, const
 int32_t usart_os_set_baud_rate(struct usart_os_descriptor *const descr, const uint32_t baud_rate)
 {
 	ASSERT(descr);
-	_usart_async_set_baud_rate(&descr->device, baud_rate);
+	descr->func->async_set_baud_rate(&descr->device, baud_rate);
 
 	return ERR_NONE;
 }
@@ -173,7 +174,7 @@ int32_t usart_os_set_baud_rate(struct usart_os_descriptor *const descr, const ui
 int32_t usart_os_set_data_order(struct usart_os_descriptor *const descr, const enum usart_data_order data_order)
 {
 	ASSERT(descr);
-	_usart_async_set_data_order(&descr->device, data_order);
+	descr->func->async_set_data_order(&descr->device, data_order);
 
 	return ERR_NONE;
 }
@@ -184,7 +185,7 @@ int32_t usart_os_set_data_order(struct usart_os_descriptor *const descr, const e
 int32_t usart_os_set_mode(struct usart_os_descriptor *const descr, const enum usart_mode mode)
 {
 	ASSERT(descr);
-	_usart_async_set_mode(&descr->device, mode);
+	descr->func->async_set_mode(&descr->device, mode);
 
 	return ERR_NONE;
 }
@@ -195,7 +196,7 @@ int32_t usart_os_set_mode(struct usart_os_descriptor *const descr, const enum us
 int32_t usart_os_set_parity(struct usart_os_descriptor *const descr, const enum usart_parity parity)
 {
 	ASSERT(descr);
-	_usart_async_set_parity(&descr->device, parity);
+	descr->func->async_set_parity(&descr->device, parity);
 
 	return ERR_NONE;
 }
@@ -206,7 +207,7 @@ int32_t usart_os_set_parity(struct usart_os_descriptor *const descr, const enum 
 int32_t usart_os_set_stopbits(struct usart_os_descriptor *const descr, const enum usart_stop_bits stop_bits)
 {
 	ASSERT(descr);
-	_usart_async_set_stop_bits(&descr->device, stop_bits);
+	descr->func->async_set_stop_bits(&descr->device, stop_bits);
 
 	return ERR_NONE;
 }
@@ -217,7 +218,7 @@ int32_t usart_os_set_stopbits(struct usart_os_descriptor *const descr, const enu
 int32_t usart_os_set_character_size(struct usart_os_descriptor *const descr, const enum usart_character_size size)
 {
 	ASSERT(descr);
-	_usart_async_set_character_size(&descr->device, size);
+	descr->func->async_set_character_size(&descr->device, size);
 
 	return ERR_NONE;
 }
@@ -229,7 +230,7 @@ int32_t usart_os_flow_control_status(const struct usart_os_descriptor *const des
                                      union usart_flow_control_state *const   state)
 {
 	ASSERT(descr && state);
-	*state = _usart_async_get_flow_control_state(&descr->device);
+	*state = descr->func->async_get_flow_control_state(&descr->device);
 
 	return ERR_NONE;
 }
@@ -268,7 +269,7 @@ static int32_t usart_os_write(struct io_descriptor *const io_descr, const uint8_
 	descr->tx_buffer        = (uint8_t *)buf;
 	descr->tx_buffer_length = length;
 	descr->tx_por           = 0;
-	_usart_async_enable_byte_sent_irq(&descr->device);
+	descr->func->async_enable_byte_sent_irq(&descr->device);
 
 	return sem_down(&descr->tx_sem, ~0) == 0 ? length : ERR_TIMEOUT;
 }
@@ -323,10 +324,10 @@ static void usart_os_process_byte_sent(struct _usart_async_device *device)
 {
 	struct usart_os_descriptor *descr = CONTAINER_OF(device, struct usart_os_descriptor, device);
 	if (descr->tx_por != descr->tx_buffer_length) {
-		_usart_async_write_byte(&descr->device, descr->tx_buffer[descr->tx_por++]);
-		_usart_async_enable_byte_sent_irq(&descr->device);
+		descr->func->async_write_byte(&descr->device, descr->tx_buffer[descr->tx_por++]);
+		descr->func->async_enable_byte_sent_irq(&descr->device);
 	} else {
-		_usart_async_enable_tx_done_irq(&descr->device);
+		descr->func->async_enable_tx_done_irq(&descr->device);
 	}
 }
 

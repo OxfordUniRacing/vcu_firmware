@@ -58,16 +58,16 @@ middlewares:
       usb_cdcd_acm_bmaxpower: 50
       usb_cdcd_acm_bnumconfig: 1
       usb_cdcd_acm_comm_baltset: 0
-      usb_cdcd_acm_comm_bifcnum: 0
+      usb_cdcd_acm_comm_bifcnum: 1
       usb_cdcd_acm_comm_iifc: 0
       usb_cdcd_acm_comm_int_interval: 10
       usb_cdcd_acm_comm_int_maxpksz: 64 bytes
       usb_cdcd_acm_data_baltset: 0
       usb_cdcd_acm_data_bifcnum: 2
       usb_cdcd_acm_data_buckout_maxpksz: 64 bytes
-      usb_cdcd_acm_data_buckout_maxpksz_hs: 512 bytes
+      usb_cdcd_acm_data_buckout_maxpksz_hs: 64 bytes
       usb_cdcd_acm_data_builin_maxpksz: 64 bytes
-      usb_cdcd_acm_data_builin_maxpksz_hs: 512 bytes
+      usb_cdcd_acm_data_builin_maxpksz_hs: 64 bytes
       usb_cdcd_acm_data_bulkin_epaddr: EndpointAddress = 0x84
       usb_cdcd_acm_data_bulkout_epaddr: EndpointAddress = 0x03
       usb_cdcd_acm_data_iifc: 0
@@ -337,6 +337,80 @@ drivers:
           external: false
           external_frequency: 0
         configuration: {}
+  UART_MC_1:
+    user_label: UART_MC_1
+    definition: Atmel:SAME70B_Drivers:0.0.1::ATSAME70Q21B-AN::UART1::driver_config_definition::UART::HAL:Driver:USART.RTOS.Beta
+    functionality: USART
+    api: HAL:Driver:USART_RTOS_Beta
+    configuration:
+      uart_advanced: false
+      uart_baud_rate: 115200
+      uart_channel_mode: Normal Mode
+      uart_parity: No parity
+      uart_receive_filter_enable: false
+      uart_usclks: Peripheral clock is selected
+    optional_signals:
+    - identifier: UART_MC_1:URXD/1
+      pad: PA5
+      mode: Enabled
+      configuration: null
+      definition: Atmel:SAME70B_Drivers:0.0.1::ATSAME70Q21B-AN::optional_signal_definition::UART1.URXD.1
+      name: UART1/URXD/1
+      label: URXD/1
+    - identifier: UART_MC_1:UTXD/1
+      pad: PA6
+      mode: Enabled
+      configuration: null
+      definition: Atmel:SAME70B_Drivers:0.0.1::ATSAME70Q21B-AN::optional_signal_definition::UART1.UTXD.1
+      name: UART1/UTXD/1
+      label: UTXD/1
+    variant: null
+    clocks:
+      domain_group:
+        nodes:
+        - name: UART
+          input: Master Clock (MCK)
+          external: false
+          external_frequency: 0
+        configuration:
+          uart_clock_source: Master Clock (MCK)
+  UART_MC_2:
+    user_label: UART_MC_2
+    definition: Atmel:SAME70B_Drivers:0.0.1::ATSAME70Q21B-AN::UART2::driver_config_definition::UART::HAL:Driver:USART.RTOS.Beta
+    functionality: USART
+    api: HAL:Driver:USART_RTOS_Beta
+    configuration:
+      uart_advanced: false
+      uart_baud_rate: 115200
+      uart_channel_mode: Normal Mode
+      uart_parity: No parity
+      uart_receive_filter_enable: false
+      uart_usclks: Peripheral clock is selected
+    optional_signals:
+    - identifier: UART_MC_2:URXD/2
+      pad: PD25
+      mode: Enabled
+      configuration: null
+      definition: Atmel:SAME70B_Drivers:0.0.1::ATSAME70Q21B-AN::optional_signal_definition::UART2.URXD.2
+      name: UART2/URXD/2
+      label: URXD/2
+    - identifier: UART_MC_2:UTXD/2
+      pad: PD26
+      mode: Enabled
+      configuration: null
+      definition: Atmel:SAME70B_Drivers:0.0.1::ATSAME70Q21B-AN::optional_signal_definition::UART2.UTXD.2
+      name: UART2/UTXD/2
+      label: UTXD/2
+    variant: null
+    clocks:
+      domain_group:
+        nodes:
+        - name: UART
+          input: Master Clock (MCK)
+          external: false
+          external_frequency: 0
+        configuration:
+          uart_clock_source: Master Clock (MCK)
   USART_EDBG:
     user_label: USART_EDBG
     definition: Atmel:SAME70B_Drivers:0.0.1::ATSAME70Q21B-AN::USART1::driver_config_definition::UART::HAL:Driver:USART.RTOS.Beta
@@ -748,6 +822,18 @@ pads:
     mode: Peripheral IO
     user_label: PA21
     configuration: null
+  PD25:
+    name: PD25
+    definition: Atmel:SAME70B_Drivers:0.0.1::ATSAME70Q21B-AN::pad::PD25
+    mode: Peripheral IO
+    user_label: PD25
+    configuration: null
+  PD26:
+    name: PD26
+    definition: Atmel:SAME70B_Drivers:0.0.1::ATSAME70Q21B-AN::pad::PD26
+    mode: Peripheral IO
+    user_label: PD26
+    configuration: null
   PA25:
     name: PA25
     definition: Atmel:SAME70B_Drivers:0.0.1::ATSAME70Q21B-AN::pad::PA25
@@ -766,6 +852,12 @@ pads:
     mode: Advanced
     user_label: PA27
     configuration: null
+  PA5:
+    name: PA5
+    definition: Atmel:SAME70B_Drivers:0.0.1::ATSAME70Q21B-AN::pad::PA5
+    mode: Peripheral IO
+    user_label: PA5
+    configuration: null
   CARD_DETECT_0:
     name: PC16
     definition: Atmel:SAME70B_Drivers:0.0.1::ATSAME70Q21B-AN::pad::PC16
@@ -783,6 +875,12 @@ pads:
     definition: Atmel:SAME70B_Drivers:0.0.1::ATSAME70Q21B-AN::pad::PA28
     mode: Advanced
     user_label: PA28
+    configuration: null
+  PA6:
+    name: PA6
+    definition: Atmel:SAME70B_Drivers:0.0.1::ATSAME70Q21B-AN::pad::PA6
+    mode: Peripheral IO
+    user_label: PA6
     configuration: null
   PA30:
     name: PA30

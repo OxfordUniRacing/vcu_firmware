@@ -27,6 +27,12 @@ struct flash_descriptor FLASH;
 
 struct mci_os_desc IO_BUS;
 
+struct usart_os_descriptor UART_MC_1;
+uint8_t                    UART_MC_1_buffer[UART_MC_1_BUFFER_SIZE];
+
+struct usart_os_descriptor UART_MC_2;
+uint8_t                    UART_MC_2_buffer[UART_MC_2_BUFFER_SIZE];
+
 struct usart_os_descriptor USART_EDBG;
 uint8_t                    USART_EDBG_buffer[USART_EDBG_BUFFER_SIZE];
 
@@ -267,6 +273,50 @@ void IO_BUS_init(void)
 	IO_BUS_PORT_init();
 }
 
+void UART_MC_1_PORT_init(void)
+{
+
+	gpio_set_pin_function(PA5, MUX_PA5C_UART1_URXD1);
+
+	gpio_set_pin_function(PA6, MUX_PA6C_UART1_UTXD1);
+}
+
+void UART_MC_1_CLOCK_init(void)
+{
+	_pmc_enable_periph_clock(ID_UART1);
+}
+
+void UART_MC_1_init(void)
+{
+	UART_MC_1_CLOCK_init();
+	usart_os_init(&UART_MC_1, UART1, UART_MC_1_buffer, UART_MC_1_BUFFER_SIZE, (void *)_uart_get_usart_async());
+	usart_os_enable(&UART_MC_1);
+	UART_MC_1_PORT_init();
+	NVIC_SetPriority(UART1_IRQn, PERIPHERAL_INTERRUPT_PRIORITY);
+}
+
+void UART_MC_2_PORT_init(void)
+{
+
+	gpio_set_pin_function(PD25, MUX_PD25C_UART2_URXD2);
+
+	gpio_set_pin_function(PD26, MUX_PD26C_UART2_UTXD2);
+}
+
+void UART_MC_2_CLOCK_init(void)
+{
+	_pmc_enable_periph_clock(ID_UART2);
+}
+
+void UART_MC_2_init(void)
+{
+	UART_MC_2_CLOCK_init();
+	usart_os_init(&UART_MC_2, UART2, UART_MC_2_buffer, UART_MC_2_BUFFER_SIZE, (void *)_uart_get_usart_async());
+	usart_os_enable(&UART_MC_2);
+	UART_MC_2_PORT_init();
+	NVIC_SetPriority(UART2_IRQn, PERIPHERAL_INTERRUPT_PRIORITY);
+}
+
 void USART_EDBG_PORT_init(void)
 {
 
@@ -369,6 +419,10 @@ void system_init(void)
 	FLASH_init();
 
 	IO_BUS_init();
+
+	UART_MC_1_init();
+
+	UART_MC_2_init();
 
 	USART_EDBG_init();
 

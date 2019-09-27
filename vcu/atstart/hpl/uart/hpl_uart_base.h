@@ -31,8 +31,8 @@
  *
  */
 
-#ifndef _HPL_USART_USART_H_INCLUDED
-#define _HPL_USART_USART_H_INCLUDED
+#ifndef _HPL_UART_BASE_H_INCLUDED
+#define _HPL_UART_BASE_H_INCLUDED
 
 #include <hpl_usart_sync.h>
 #include <hpl_usart_async.h>
@@ -64,7 +64,7 @@ extern "C" {
  *
  * \return Initialization status
  */
-int32_t _usart_usart_async_init(struct _usart_async_device *const device, void *const hw);
+int32_t _uart_usart_async_init(struct _usart_async_device *const device, void *const hw);
 
 /**
  * \brief De-initialize USART
@@ -73,7 +73,7 @@ int32_t _usart_usart_async_init(struct _usart_async_device *const device, void *
  *
  * \param[in] device The pointer to USART device instance
  */
-void _usart_usart_async_deinit(struct _usart_async_device *const device);
+void _uart_usart_async_deinit(struct _usart_async_device *const device);
 
 /**
  * \brief Enable usart module
@@ -82,7 +82,7 @@ void _usart_usart_async_deinit(struct _usart_async_device *const device);
  *
  * \param[in] device The pointer to USART device instance
  */
-void _usart_usart_async_enable(struct _usart_async_device *const device);
+void _uart_usart_async_enable(struct _usart_async_device *const device);
 
 /**
  * \brief Disable usart module
@@ -91,7 +91,7 @@ void _usart_usart_async_enable(struct _usart_async_device *const device);
  *
  * \param[in] device The pointer to USART device instance
  */
-void _usart_usart_async_disable(struct _usart_async_device *const device);
+void _uart_usart_async_disable(struct _usart_async_device *const device);
 
 /**
  * \brief Calculate baud rate register value
@@ -104,8 +104,8 @@ void _usart_usart_async_disable(struct _usart_async_device *const device);
  *
  * \return Calculated baud rate register value
  */
-uint16_t _usart_usart_async_calculate_baud_rate(const uint32_t baud, const uint32_t clock_rate, const uint8_t samples,
-                                                const enum usart_baud_rate_mode mode, const uint8_t fraction);
+uint16_t _uart_usart_async_calculate_baud_rate(const uint32_t baud, const uint32_t clock_rate, const uint8_t samples,
+                                               const enum usart_baud_rate_mode mode, const uint8_t fraction);
 
 /**
  * \brief Set baud rate
@@ -113,7 +113,7 @@ uint16_t _usart_usart_async_calculate_baud_rate(const uint32_t baud, const uint3
  * \param[in] device The pointer to USART device instance
  * \param[in] baud_rate A baud rate to set
  */
-void _usart_usart_async_set_baud_rate(struct _usart_async_device *const device, const uint32_t baud_rate);
+void _uart_usart_async_set_baud_rate(struct _usart_async_device *const device, const uint32_t baud_rate);
 
 /**
  * \brief Set data order
@@ -121,7 +121,7 @@ void _usart_usart_async_set_baud_rate(struct _usart_async_device *const device, 
  * \param[in] device The pointer to USART device instance
  * \param[in] order A data order to set
  */
-void _usart_usart_async_set_data_order(struct _usart_async_device *const device, const enum usart_data_order order);
+void _uart_usart_async_set_data_order(struct _usart_async_device *const device, const enum usart_data_order order);
 
 /**
  * \brief Set mode
@@ -129,7 +129,7 @@ void _usart_usart_async_set_data_order(struct _usart_async_device *const device,
  * \param[in] device The pointer to USART device instance
  * \param[in] mode A mode to set
  */
-void _usart_usart_async_set_mode(struct _usart_async_device *const device, const enum usart_mode mode);
+void _uart_usart_async_set_mode(struct _usart_async_device *const device, const enum usart_mode mode);
 
 /**
  * \brief Set parity
@@ -137,7 +137,7 @@ void _usart_usart_async_set_mode(struct _usart_async_device *const device, const
  * \param[in] device The pointer to USART device instance
  * \param[in] parity A parity to set
  */
-void _usart_usart_async_set_parity(struct _usart_async_device *const device, const enum usart_parity parity);
+void _uart_usart_async_set_parity(struct _usart_async_device *const device, const enum usart_parity parity);
 
 /**
  * \brief Set stop bits mode
@@ -145,7 +145,7 @@ void _usart_usart_async_set_parity(struct _usart_async_device *const device, con
  * \param[in] device The pointer to USART device instance
  * \param[in] stop_bits A stop bits mode to set
  */
-void _usart_usart_async_set_stop_bits(struct _usart_async_device *const device, const enum usart_stop_bits stop_bits);
+void _uart_usart_async_set_stop_bits(struct _usart_async_device *const device, const enum usart_stop_bits stop_bits);
 
 /**
  * \brief Set character size
@@ -153,15 +153,15 @@ void _usart_usart_async_set_stop_bits(struct _usart_async_device *const device, 
  * \param[in] device The pointer to USART device instance
  * \param[in] size A character size to set
  */
-void _usart_usart_async_set_character_size(struct _usart_async_device *const device,
-                                           const enum usart_character_size   size);
+void _uart_usart_async_set_character_size(struct _usart_async_device *const device,
+                                          const enum usart_character_size   size);
 
 /**
  * \brief Retrieve usart status
  *
  * \param[in] device The pointer to USART device instance
  */
-uint32_t _usart_usart_async_get_status(const struct _usart_async_device *const device);
+uint32_t _uart_usart_async_get_status(const struct _usart_async_device *const device);
 
 /**
  * \brief Write a byte to the given USART instance
@@ -169,7 +169,7 @@ uint32_t _usart_usart_async_get_status(const struct _usart_async_device *const d
  * \param[in] device The pointer to USART device instance
  * \param[in] data Data to write
  */
-void _usart_usart_async_write_byte(struct _usart_async_device *const device, uint8_t data);
+void _uart_usart_async_write_byte(struct _usart_async_device *const device, uint8_t data);
 
 /**
  * \brief Check if USART is ready to send next byte
@@ -180,7 +180,7 @@ void _usart_usart_async_write_byte(struct _usart_async_device *const device, uin
  * \retval true if the USART is ready to send next byte
  * \retval false if the USART is not ready to send next byte
  */
-bool _usart_usart_async_is_byte_sent(const struct _usart_async_device *const device);
+bool _uart_usart_async_is_byte_sent(const struct _usart_async_device *const device);
 
 /**
  * \brief Set the state of flow control pins
@@ -188,8 +188,8 @@ bool _usart_usart_async_is_byte_sent(const struct _usart_async_device *const dev
  * \param[in] device The pointer to USART device instance
  * \param[in] state - A state of flow control pins to set
  */
-void _usart_usart_async_set_flow_control_state(struct _usart_async_device *const    device,
-                                               const union usart_flow_control_state state);
+void _uart_usart_async_set_flow_control_state(struct _usart_async_device *const    device,
+                                              const union usart_flow_control_state state);
 
 /**
  * \brief Retrieve the state of flow control pins
@@ -198,22 +198,21 @@ void _usart_usart_async_set_flow_control_state(struct _usart_async_device *const
  *
  * \return USART_FLOW_CONTROL_STATE_UNAVAILABLE.
  */
-union usart_flow_control_state
-_usart_usart_async_get_flow_control_state(const struct _usart_async_device *const device);
+union usart_flow_control_state _uart_usart_async_get_flow_control_state(const struct _usart_async_device *const device);
 
 /**
  * \brief Enable data register empty interrupt
  *
  * \param[in] device The pointer to USART device instance
  */
-void _usart_usart_async_enable_byte_sent_irq(struct _usart_async_device *const device);
+void _uart_usart_async_enable_byte_sent_irq(struct _usart_async_device *const device);
 
 /**
  * \brief Enable transmission complete interrupt
  *
  * \param[in] device The pointer to USART device instance
  */
-void _usart_usart_async_enable_tx_done_irq(struct _usart_async_device *const device);
+void _uart_usart_async_enable_tx_done_irq(struct _usart_async_device *const device);
 
 /**
  * \brief Retrieve ordinal number of the given USART hardware instance
@@ -222,7 +221,7 @@ void _usart_usart_async_enable_tx_done_irq(struct _usart_async_device *const dev
  *
  * \return The ordinal number of the given USART hardware instance
  */
-uint8_t _usart_usart_async_get_hardware_index(const struct _usart_async_device *const device);
+uint8_t _uart_usart_async_get_hardware_index(const struct _usart_async_device *const device);
 
 /**
  * \brief Enable/disable USART interrupt
@@ -231,21 +230,22 @@ uint8_t _usart_usart_async_get_hardware_index(const struct _usart_async_device *
  * param[in] type The type of interrupt to disable/enable if applicable
  * param[in] state Enable or disable
  */
-void _usart_usart_async_set_irq_state(struct _usart_async_device *const     device,
-                                      const enum _usart_async_callback_type type, const bool state);
+void _uart_usart_async_set_irq_state(struct _usart_async_device *const     device,
+                                     const enum _usart_async_callback_type type, const bool state);
 
 /**
  * \brief Retrieve timer helper functions
  *
  * \return A pointer to set of timer helper functions
  */
-void *_usart_get_usart_sync(void);
-void *_usart_get_usart_async(void);
-void *_usart_get_usart_dma(void);
+void *_uart_get_usart_sync(void);
+void *_uart_get_usart_async(void);
+void *_uart_get_usart_dma(void);
+
 //@}
 
 #ifdef __cplusplus
 }
 #endif
 /**@}*/
-#endif /* _HPL_USART_USART_H_INCLUDED */
+#endif /* _HPL_UART_BASE_H_INCLUDED */

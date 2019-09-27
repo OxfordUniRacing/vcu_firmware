@@ -27,15 +27,29 @@ extern "C" {
 
 #include <hal_usart_os.h>
 
+#include <hal_usart_os.h>
+
+#include <hal_usart_os.h>
+
 #include "hal_usb_device.h"
 
 #include <hal_can_async.h>
+
+#define UART_MC_1_BUFFER_SIZE 16
+
+#define UART_MC_2_BUFFER_SIZE 16
 
 #define USART_EDBG_BUFFER_SIZE 16
 
 extern struct flash_descriptor FLASH;
 
 extern struct mci_os_desc IO_BUS;
+
+extern struct usart_os_descriptor UART_MC_1;
+extern uint8_t                    UART_MC_1_buffer[];
+
+extern struct usart_os_descriptor UART_MC_2;
+extern uint8_t                    UART_MC_2_buffer[];
 
 extern struct usart_os_descriptor USART_EDBG;
 extern uint8_t                    USART_EDBG_buffer[];
@@ -48,6 +62,14 @@ void FLASH_CLOCK_init(void);
 void IO_BUS_PORT_init(void);
 void IO_BUS_CLOCK_init(void);
 void IO_BUS_init(void);
+
+void UART_MC_1_PORT_init(void);
+void UART_MC_1_CLOCK_init(void);
+void UART_MC_1_init(void);
+
+void UART_MC_2_PORT_init(void);
+void UART_MC_2_CLOCK_init(void);
+void UART_MC_2_init(void);
 
 void USART_EDBG_PORT_init(void);
 void USART_EDBG_CLOCK_init(void);

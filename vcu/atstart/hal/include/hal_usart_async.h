@@ -3,7 +3,7 @@
  *
  * \brief USART related functionality declaration.
  *
- * Copyright (c) 2015-2018 Microchip Technology Inc. and its subsidiaries.
+ * Copyright (c) 2014-2018 Microchip Technology Inc. and its subsidiaries.
  *
  * \asf_license_start
  *
@@ -31,16 +31,15 @@
  *
  */
 
-#ifndef _HAL_USART_OS_H_INCLUDED
-#define _HAL_USART_OS_H_INCLUDED
+#ifndef _HAL_USART_ASYNC_H_INCLUDED
+#define _HAL_USART_ASYNC_H_INCLUDED
 
 #include "hal_io.h"
-#include <hal_rtos.h>
 #include <hpl_usart_async.h>
 #include <utils_ringbuffer.h>
 
 /**
- * \addtogroup doc_driver_hal_usart_os
+ * \addtogroup doc_driver_hal_usart_async
  *
  * @{
  */
@@ -54,28 +53,58 @@ extern "C" {
  *
  * The USART descriptor forward declaration.
  */
-struct usart_os_descriptor;
+struct usart_async_descriptor;
+
+/**
+ * \brief USART callback type
+ */
+typedef void (*usart_cb_t)(const struct usart_async_descriptor *const descr);
+
+/**
+ * \brief USART callback types
+ */
+enum usart_async_callback_type { USART_ASYNC_RXC_CB, USART_ASYNC_TXC_CB, USART_ASYNC_ERROR_CB };
+
+/**
+ * \brief USART callbacks
+ */
+struct usart_async_callbacks {
+	usart_cb_t tx_done;
+	usart_cb_t rx_done;
+	usart_cb_t error;
+};
+
+/** \brief USART status
+ *  Status descriptor holds the current status of transfer.
+ */
+struct usart_async_status {
+	/** Status flags */
+	uint32_t flags;
+	/** Number of characters transmitted */
+	uint16_t txcnt;
+	/** Number of characters receviced */
+	uint16_t rxcnt;
+};
 
 /**
  * \brief Asynchronous USART descriptor structure
  */
-struct usart_os_descriptor {
+struct usart_async_descriptor {
 	struct _usart_async_hpl_interface *func;
 	struct io_descriptor               io;
 	struct _usart_async_device         device;
+	struct usart_async_callbacks       usart_cb;
+	uint32_t                           stat;
 
 	struct ringbuffer rx;
-	uint8_t *         rx_buffer;
-	uint16_t          rx_size;
-	uint16_t          rx_length;
-
-	uint8_t *tx_buffer;
-	uint16_t tx_por;
-	uint16_t tx_buffer_length;
-
-	sem_t rx_sem;
-	sem_t tx_sem;
+	uint16_t          tx_por;
+	uint8_t *         tx_buffer;
+	uint16_t          tx_buffer_length;
 };
+
+/** USART write busy */
+#define USART_ASYNC_STATUS_BUSY 0x0001
+
 /**
  * \brief Initialize USART interface
  *
@@ -88,14 +117,15 @@ struct usart_os_descriptor {
  * \param[in] hw The pointer to the hardware instance
  * \param[in] rx_buffer An RX buffer
  * \param[in] rx_buffer_length The length of the buffer above
+ * \param[in] func The pointer to a set of function pointers
  *
  * \return Initialization status.
  * \retval -1 Passed parameters were invalid or the interface is already
  * initialized
  * \retval 0 The initialization is completed successfully
  */
-int32_t usart_os_init(struct usart_os_descriptor *const descr, void *const hw, uint8_t *const rx_buffer,
-                      const uint16_t rx_buffer_length, void *const func);
+int32_t usart_async_init(struct usart_async_descriptor *const descr, void *const hw, uint8_t *const rx_buffer,
+                         const uint16_t rx_buffer_length, void *const func);
 
 /**
  * \brief Deinitialize USART interface
@@ -107,11 +137,8 @@ int32_t usart_os_init(struct usart_os_descriptor *const descr, void *const hw, u
  * \param[in] descr A USART descriptor which is used to communicate via USART
  *
  * \return De-initialization status.
- * \retval -1 Passed parameters were invalid or the interface is already
- * deinitialized
- * \retval 0 The de-initialization is completed successfully
  */
-int32_t usart_os_deinit(struct usart_os_descriptor *const descr);
+int32_t usart_async_deinit(struct usart_async_descriptor *const descr);
 
 /**
  * \brief Enable USART interface
@@ -122,7 +149,7 @@ int32_t usart_os_deinit(struct usart_os_descriptor *const descr);
  *
  * \return Enabling status.
  */
-int32_t usart_os_enable(struct usart_os_descriptor *const descr);
+int32_t usart_async_enable(struct usart_async_descriptor *const descr);
 
 /**
  * \brief Disable USART interface
@@ -133,7 +160,7 @@ int32_t usart_os_enable(struct usart_os_descriptor *const descr);
  *
  * \return Disabling status.
  */
-int32_t usart_os_disable(struct usart_os_descriptor *const descr);
+int32_t usart_async_disable(struct usart_async_descriptor *const descr);
 
 /**
  * \brief Retrieve I/O descriptor
@@ -144,28 +171,38 @@ int32_t usart_os_disable(struct usart_os_descriptor *const descr);
  * \param[out] io An I/O descriptor to retrieve
  *
  * \return The status of I/O descriptor retrieving.
- * \retval -1 Passed parameters were invalid or the interface is already
- * deinitialized
- * \retval 0 The retrieving is completed successfully
  */
-int32_t usart_os_get_io(struct usart_os_descriptor *const descr, struct io_descriptor **io);
+int32_t usart_async_get_io_descriptor(struct usart_async_descriptor *const descr, struct io_descriptor **io);
+
+/**
+ * \brief Register USART callback
+ *
+ * \param[in] descr A USART descriptor which is used to communicate via USART
+ * \param[in] type Callback type
+ * \param[in] cb A callback function
+ *
+ * \return The status of callback assignment.
+ * \retval -1 Passed parameters were invalid or the interface is not initialized
+ * \retval 0 A callback is registered successfully
+ */
+int32_t usart_async_register_callback(struct usart_async_descriptor *const descr,
+                                      const enum usart_async_callback_type type, usart_cb_t cb);
 
 /**
  * \brief Specify action for flow control pins
  *
- * This function sets the action (or state) for flow control pins if
+ * This function sets action (or state) for flow control pins if
  * the flow control is enabled.
- * It sets the state of flow control pins only if the automatic support of
+ * It sets state of flow control pins only if automatic support of
  * the flow control is not supported by the hardware.
  *
  * \param[in] descr A USART descriptor which is used to communicate via USART
  * \param[in] state A state to set the flow control pins
  *
- * \return The status of the flow control action setup.
- * \retval -1 Passed parameters were invalid or the interface is not initialized
- * \retval 0 The flow control action is set successfully
+ * \return The status of flow control action setup.
  */
-int32_t usart_os_set_flow_control(struct usart_os_descriptor *const descr, const union usart_flow_control_state state);
+int32_t usart_async_set_flow_control(struct usart_async_descriptor *const descr,
+                                     const union usart_flow_control_state state);
 
 /**
  * \brief Set USART baud rate
@@ -173,11 +210,9 @@ int32_t usart_os_set_flow_control(struct usart_os_descriptor *const descr, const
  * \param[in] descr A USART descriptor which is used to communicate via USART
  * \param[in] baud_rate A baud rate to set
  *
- * \return The status of the baudrate setting.
- * \retval -1 Passed parameters were invalid or the interface is not initialized
- * \retval 0 The flow control action is set successfully
+ * \return The status of baud rate setting.
  */
-int32_t usart_os_set_baud_rate(struct usart_os_descriptor *const descr, const uint32_t baud_rate);
+int32_t usart_async_set_baud_rate(struct usart_async_descriptor *const descr, const uint32_t baud_rate);
 
 /**
  * \brief Set USART data order
@@ -186,10 +221,8 @@ int32_t usart_os_set_baud_rate(struct usart_os_descriptor *const descr, const ui
  * \param[in] data_order A data order to set
  *
  * \return The status of data order setting.
- * \retval -1 Passed parameters were invalid or the interface is not initialized
- * \retval 0 The flow control action is set successfully
  */
-int32_t usart_os_set_data_order(struct usart_os_descriptor *const descr, const enum usart_data_order data_order);
+int32_t usart_async_set_data_order(struct usart_async_descriptor *const descr, const enum usart_data_order data_order);
 
 /**
  * \brief Set USART mode
@@ -198,10 +231,8 @@ int32_t usart_os_set_data_order(struct usart_os_descriptor *const descr, const e
  * \param[in] mode A mode to set
  *
  * \return The status of mode setting.
- * \retval -1 Passed parameters were invalid or the interface is not initialized
- * \retval 0 The flow control action is set successfully
  */
-int32_t usart_os_set_mode(struct usart_os_descriptor *const descr, const enum usart_mode mode);
+int32_t usart_async_set_mode(struct usart_async_descriptor *const descr, const enum usart_mode mode);
 
 /**
  * \brief Set USART parity
@@ -210,10 +241,8 @@ int32_t usart_os_set_mode(struct usart_os_descriptor *const descr, const enum us
  * \param[in] parity A parity to set
  *
  * \return The status of parity setting.
- * \retval -1 Passed parameters were invalid or the interface is not initialized
- * \retval 0 The flow control action is set successfully
  */
-int32_t usart_os_set_parity(struct usart_os_descriptor *const descr, const enum usart_parity parity);
+int32_t usart_async_set_parity(struct usart_async_descriptor *const descr, const enum usart_parity parity);
 
 /**
  * \brief Set USART stop bits
@@ -222,10 +251,8 @@ int32_t usart_os_set_parity(struct usart_os_descriptor *const descr, const enum 
  * \param[in] stop_bits Stop bits to set
  *
  * \return The status of stop bits setting.
- * \retval -1 Passed parameters were invalid or the interface is not initialized
- * \retval 0 The flow control action is set successfully
  */
-int32_t usart_os_set_stopbits(struct usart_os_descriptor *const descr, const enum usart_stop_bits stop_bits);
+int32_t usart_async_set_stopbits(struct usart_async_descriptor *const descr, const enum usart_stop_bits stop_bits);
 
 /**
  * \brief Set USART character size
@@ -234,29 +261,59 @@ int32_t usart_os_set_stopbits(struct usart_os_descriptor *const descr, const enu
  * \param[in] size A character size to set
  *
  * \return The status of character size setting.
- * \retval -1 Passed parameters were invalid or the interface is not initialized
- * \retval 0 The flow control action is set successfully
  */
-int32_t usart_os_set_character_size(struct usart_os_descriptor *const descr, const enum usart_character_size size);
+int32_t usart_async_set_character_size(struct usart_async_descriptor *const descr,
+                                       const enum usart_character_size      size);
 
 /**
  * \brief Retrieve the state of flow control pins
  *
  * This function retrieves the flow control pins
  * if the flow control is enabled.
- * The function can return UASRT_OS_FLOW_CONTROL_STATE_UNAVAILABLE in case
+ *
+ * The function can return USART_FLOW_CONTROL_STATE_UNAVAILABLE in case
  * if the flow control is done by the hardware
- * and pins state cannot be read out.
+ * and the pins state cannot be read out.
  *
  * \param[in] descr A USART descriptor which is used to communicate via USART
  * \param[out] state The state of flow control pins
  *
  * \return The status of flow control state reading.
- * \retval -1 Passed parameters were invalid or the interface is not initialized
- * \retval 0 The flow control state is retrieved successfully
  */
-int32_t usart_os_flow_control_status(const struct usart_os_descriptor *const descr,
-                                     union usart_flow_control_state *const   state);
+int32_t usart_async_flow_control_status(const struct usart_async_descriptor *const descr,
+                                        union usart_flow_control_state *const      state);
+
+/**
+ * \brief Check if the USART transmitter is empty
+ *
+ * \param[in] descr A USART descriptor which is used to communicate via USART
+ *
+ * \return The status of USART TX empty checking.
+ * \retval 0 The USART transmitter is not empty
+ * \retval 1 The USART transmitter is empty
+ */
+int32_t usart_async_is_tx_empty(const struct usart_async_descriptor *const descr);
+
+/**
+ * \brief Check if the USART receiver is not empty
+ *
+ * \param[in] descr A USART descriptor which is used to communicate via USART
+ *
+ * \return The status of the USART RX empty checking.
+ * \retval 1 The USART receiver is not empty
+ * \retval 0 The USART receiver is empty
+ */
+int32_t usart_async_is_rx_not_empty(const struct usart_async_descriptor *const descr);
+
+/**
+ * \brief Retrieve the current interface status
+ *
+ * \param[in]  descr A USART descriptor which is used to communicate via USART
+ * \param[out] status The state of USART
+ *
+ * \return The status of USART status retrieving.
+ */
+int32_t usart_async_get_status(struct usart_async_descriptor *const descr, struct usart_async_status *const status);
 
 /**
  * \brief flush USART ringbuf
@@ -267,17 +324,17 @@ int32_t usart_os_flow_control_status(const struct usart_os_descriptor *const des
  *
  * \return ERR_NONE
  */
-int32_t usart_os_flush_rx_buffer(struct usart_os_descriptor *const descr);
+int32_t usart_async_flush_rx_buffer(struct usart_async_descriptor *const descr);
 
 /**
  * \brief Retrieve the current driver version
  *
  * \return Current driver version.
  */
-uint32_t usart_os_get_version(void);
+uint32_t usart_async_get_version(void);
 
 #ifdef __cplusplus
 }
 #endif
 /**@}*/
-#endif /* _HAL_USART_OS_H_INCLUDED */
+#endif /* _HAL_USART_ASYNC_H_INCLUDED */

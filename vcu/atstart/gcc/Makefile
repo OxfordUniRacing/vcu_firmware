@@ -31,6 +31,7 @@ endif
 SUB_DIRS +=  \
  \
 usb/class/cdc/device \
+hpl/uart \
 usb/class/msc/device \
 hpl/pmc \
 hpl/usart \
@@ -56,6 +57,7 @@ hal/src/hal_can_async.o \
 atmel_start.o \
 sd_mmc_start.o \
 hpl/usart/hpl_usart.o \
+hpl/uart/hpl_uart.o \
 usb/class/cdc/device/cdcdf_acm.o \
 hal/utils/src/utils_syscalls.o \
 usb/class/msc/device/mscdf.o \
@@ -97,6 +99,7 @@ OBJS_AS_ARGS +=  \
 "atmel_start.o" \
 "sd_mmc_start.o" \
 "hpl/usart/hpl_usart.o" \
+"hpl/uart/hpl_uart.o" \
 "usb/class/cdc/device/cdcdf_acm.o" \
 "hal/utils/src/utils_syscalls.o" \
 "usb/class/msc/device/mscdf.o" \
@@ -145,6 +148,7 @@ DIR_INCLUDES +=  \
 -I"../hpl/nvmctrl" \
 -I"../hpl/pio" \
 -I"../hpl/pmc" \
+-I"../hpl/uart" \
 -I"../hpl/usart" \
 -I"../hpl/usbhs" \
 -I"../hpl/xdmac" \
@@ -172,6 +176,7 @@ DEPS_AS_ARGS +=  \
 "hal/utils/src/utils_event.d" \
 "hal/src/hal_io.d" \
 "hal/src/hal_can_async.d" \
+"hpl/uart/hpl_uart.d" \
 "hpl/usart/hpl_usart.d" \
 "hal/utils/src/utils_syscalls.d" \
 "usb/class/cdc/device/cdcdf_acm.d" \

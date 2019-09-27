@@ -35,6 +35,102 @@ void FLASH_example(void)
 	flash_read(&FLASH, 0x3200, chk_data, page_size);
 }
 
+#define TASK_UART_MC_1_STACK_SIZE (300 / sizeof(portSTACK_TYPE))
+#define TASK_UART_MC_1_STACK_PRIORITY (tskIDLE_PRIORITY + 1)
+
+static TaskHandle_t xCreateduart_mc_1Task;
+static uint8_t      example_UART_MC_1[12] = "Hello World!";
+
+/**
+ * Example task of using UART_MC_1 to echo using the IO abstraction.
+ */
+static void UART_MC_1_example_task(void *param)
+{
+	struct io_descriptor *io;
+	uint16_t              data;
+
+	(void)param;
+
+	usart_os_get_io(&UART_MC_1, &io);
+	io_write(io, example_UART_MC_1, 12);
+
+	for (;;) {
+		if (io_read(io, (uint8_t *)&data, 2) == 2) {
+			io_write(io, (uint8_t *)&data, 2);
+		}
+		os_sleep(10);
+	}
+}
+
+/**
+ * \brief Create OS task for UART_MC_1
+ */
+void task_uart_mc_1_create()
+{
+	/* Create task for UART_MC_1 */
+	if (xTaskCreate(UART_MC_1_example_task,
+	                "uart_mc_1",
+	                TASK_UART_MC_1_STACK_SIZE,
+	                NULL,
+	                TASK_UART_MC_1_STACK_PRIORITY,
+	                &xCreateduart_mc_1Task)
+	    != pdPASS) {
+		while (1) {
+			/* Please checkup stack and FreeRTOS configuration. */
+		}
+	}
+	/* Call vTaskStartScheduler() function in main function. Place vTaskStartScheduler function call after creating all
+	 * tasks and before while(1) in main function */
+}
+
+#define TASK_UART_MC_2_STACK_SIZE (300 / sizeof(portSTACK_TYPE))
+#define TASK_UART_MC_2_STACK_PRIORITY (tskIDLE_PRIORITY + 1)
+
+static TaskHandle_t xCreateduart_mc_2Task;
+static uint8_t      example_UART_MC_2[12] = "Hello World!";
+
+/**
+ * Example task of using UART_MC_2 to echo using the IO abstraction.
+ */
+static void UART_MC_2_example_task(void *param)
+{
+	struct io_descriptor *io;
+	uint16_t              data;
+
+	(void)param;
+
+	usart_os_get_io(&UART_MC_2, &io);
+	io_write(io, example_UART_MC_2, 12);
+
+	for (;;) {
+		if (io_read(io, (uint8_t *)&data, 2) == 2) {
+			io_write(io, (uint8_t *)&data, 2);
+		}
+		os_sleep(10);
+	}
+}
+
+/**
+ * \brief Create OS task for UART_MC_2
+ */
+void task_uart_mc_2_create()
+{
+	/* Create task for UART_MC_2 */
+	if (xTaskCreate(UART_MC_2_example_task,
+	                "uart_mc_2",
+	                TASK_UART_MC_2_STACK_SIZE,
+	                NULL,
+	                TASK_UART_MC_2_STACK_PRIORITY,
+	                &xCreateduart_mc_2Task)
+	    != pdPASS) {
+		while (1) {
+			/* Please checkup stack and FreeRTOS configuration. */
+		}
+	}
+	/* Call vTaskStartScheduler() function in main function. Place vTaskStartScheduler function call after creating all
+	 * tasks and before while(1) in main function */
+}
+
 #define TASK_USART_EDBG_STACK_SIZE (300 / sizeof(portSTACK_TYPE))
 #define TASK_USART_EDBG_STACK_PRIORITY (tskIDLE_PRIORITY + 1)
 

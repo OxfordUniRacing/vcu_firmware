@@ -49,6 +49,7 @@ atstart \
 fatfs \
 eeprom \
 log \
+usb \
 .
 
 # Source directories
@@ -70,6 +71,7 @@ atstart \
 fatfs \
 eeprom \
 log \
+usb \
 .
 
 # Sources files excluded from compiling
@@ -116,7 +118,7 @@ $(BUILD_DIR)/%.o: %.c
 
 $(BUILD_DIR)/atstart/hpl/usbhs/hpl_usbhs.o: atstart/hpl/usbhs/hpl_usbhs.c
 	@printf "  CC      $(<)\n"
-	$(Q)$(CC) -include memcpy_usb.h $(CPPFLAGS) $(DEFS) $(INCS) $(CFLAGS) $(ARCH_FLAGS) -o $(@) -c $(<)
+	$(Q)$(CC) -include usb/memcpy_usb.h $(CPPFLAGS) $(DEFS) $(INCS) $(CFLAGS) $(ARCH_FLAGS) -o $(@) -c $(<)
 
 $(BUILD_DIR)/$(OUTPUT_FILE_NAME).elf: $(OBJS) $(BUILD_DIR)/main.o
 	@printf "  LD      $(@)\n"

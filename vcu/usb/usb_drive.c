@@ -196,9 +196,9 @@ void usb_drive_msc_task(void *p) {
 	mscdf_register_callback(MSCDF_CB_TEST_DISK_READY, (FUNC_PTR)msc_disk_is_ready);
 
 	// wait until usb is ready
-	while (!mscdf_is_enabled()) {
-		vTaskDelay(1);
-	}
+	//while (!mscdf_is_enabled()) {
+	//	vTaskDelay(1);
+	//}
 
 	buf_ind = 0;
 

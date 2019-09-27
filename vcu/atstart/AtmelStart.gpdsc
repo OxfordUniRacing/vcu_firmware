@@ -192,6 +192,8 @@
         <file category="source" condition="ARMCC, GCC, IAR" name="hpl/pmc/hpl_pmc.c"/>
         <file category="header" condition="ARMCC, GCC, IAR" name="hpl/pmc/hpl_pmc.h"/>
         <file category="source" condition="ARMCC, GCC, IAR" name="hpl/pmc/hpl_sleep.c"/>
+        <file category="source" condition="ARMCC, GCC, IAR" name="hpl/uart/hpl_uart.c"/>
+        <file category="header" condition="ARMCC, GCC, IAR" name="hpl/uart/hpl_uart_base.h"/>
         <file category="source" condition="ARMCC, GCC, IAR" name="hpl/usart/hpl_usart.c"/>
         <file category="header" condition="ARMCC, GCC, IAR" name="hpl/usart/hpl_usart_base.h"/>
         <file category="source" condition="ARMCC, GCC, IAR" name="hpl/usbhs/hpl_usbhs.c"/>
@@ -206,6 +208,7 @@
         <file attr="config" category="header" condition="ARMCC, GCC, IAR" name="config/hpl_hsmci_config.h"/>
         <file attr="config" category="header" condition="ARMCC, GCC, IAR" name="config/hpl_mcan_config.h"/>
         <file attr="config" category="header" condition="ARMCC, GCC, IAR" name="config/hpl_pmc_config.h"/>
+        <file attr="config" category="header" condition="ARMCC, GCC, IAR" name="config/hpl_uart_config.h"/>
         <file attr="config" category="header" condition="ARMCC, GCC, IAR" name="config/hpl_usart_config.h"/>
         <file attr="config" category="header" condition="ARMCC, GCC, IAR" name="config/hpl_usb_config.h"/>
         <file attr="config" category="header" condition="ARMCC, GCC, IAR" name="config/hpl_xdmac_config.h"/>
@@ -223,6 +226,7 @@
         <file category="include" condition="ARMCC, GCC, IAR" name="hpl/nvmctrl"/>
         <file category="include" condition="ARMCC, GCC, IAR" name="hpl/pio"/>
         <file category="include" condition="ARMCC, GCC, IAR" name="hpl/pmc"/>
+        <file category="include" condition="ARMCC, GCC, IAR" name="hpl/uart"/>
         <file category="include" condition="ARMCC, GCC, IAR" name="hpl/usart"/>
         <file category="include" condition="ARMCC, GCC, IAR" name="hpl/usbhs"/>
         <file category="include" condition="ARMCC, GCC, IAR" name="hpl/xdmac"/>
