@@ -4,10 +4,10 @@ versions:
   api: '1.0'
   backend: 1.6.148
   commit: 605f106ab95776472e3febf2fac2471441fb1816
-  content: 1.0.1600
+  content: 1.0.1635
   content_pack_name: acme-packs-all
   format: '2'
-  frontend: 1.6.1881
+  frontend: 1.6.1884
 board:
   identifier: SAME70Xplained
   device: ATSAME70Q21B-AN
@@ -339,9 +339,9 @@ drivers:
         configuration: {}
   UART_MC_1:
     user_label: UART_MC_1
-    definition: Atmel:SAME70B_Drivers:0.0.1::ATSAME70Q21B-AN::UART1::driver_config_definition::UART::HAL:Driver:USART.RTOS.Beta
+    definition: Atmel:SAME70B_Drivers:0.0.1::ATSAME70Q21B-AN::UART1::driver_config_definition::UART::HAL:Driver:USART.Async
     functionality: USART
-    api: HAL:Driver:USART_RTOS_Beta
+    api: HAL:Driver:USART_Async
     configuration:
       uart_advanced: false
       uart_baud_rate: 115200
@@ -376,9 +376,9 @@ drivers:
           uart_clock_source: Master Clock (MCK)
   UART_MC_2:
     user_label: UART_MC_2
-    definition: Atmel:SAME70B_Drivers:0.0.1::ATSAME70Q21B-AN::UART2::driver_config_definition::UART::HAL:Driver:USART.RTOS.Beta
+    definition: Atmel:SAME70B_Drivers:0.0.1::ATSAME70Q21B-AN::UART2::driver_config_definition::UART::HAL:Driver:USART.Async
     functionality: USART
-    api: HAL:Driver:USART_RTOS_Beta
+    api: HAL:Driver:USART_Async
     configuration:
       uart_advanced: false
       uart_baud_rate: 115200

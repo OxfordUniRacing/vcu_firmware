@@ -18,9 +18,9 @@ extern "C" {
 
 void FLASH_example(void);
 
-void task_uart_mc_1_create();
+void UART_MC_1_example(void);
 
-void task_uart_mc_2_create();
+void UART_MC_2_example(void);
 
 void task_usart_edbg_create();
 

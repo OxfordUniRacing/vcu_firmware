@@ -61,6 +61,7 @@ hpl/uart/hpl_uart.o \
 usb/class/cdc/device/cdcdf_acm.o \
 hal/utils/src/utils_syscalls.o \
 usb/class/msc/device/mscdf.o \
+same70b/gcc/gcc/startup_same70q21b.o \
 hpl/efc/hpl_efc.o \
 hal/src/hal_delay.o \
 hpl/usbhs/hpl_usbhs.o \
@@ -81,7 +82,7 @@ usb/device/usbdc.o \
 sd_mmc/sd_mmc.o \
 examples/driver_examples.o \
 driver_init.o \
-same70b/gcc/gcc/startup_same70q21b.o \
+hal/src/hal_usart_async.o \
 same70b/gcc/system_same70q21b.o \
 hal/utils/src/utils_ringbuffer.o \
 hal/src/hal_gpio.o \
@@ -103,6 +104,7 @@ OBJS_AS_ARGS +=  \
 "usb/class/cdc/device/cdcdf_acm.o" \
 "hal/utils/src/utils_syscalls.o" \
 "usb/class/msc/device/mscdf.o" \
+"same70b/gcc/gcc/startup_same70q21b.o" \
 "hpl/efc/hpl_efc.o" \
 "hal/src/hal_delay.o" \
 "hpl/usbhs/hpl_usbhs.o" \
@@ -123,7 +125,7 @@ OBJS_AS_ARGS +=  \
 "sd_mmc/sd_mmc.o" \
 "examples/driver_examples.o" \
 "driver_init.o" \
-"same70b/gcc/gcc/startup_same70q21b.o" \
+"hal/src/hal_usart_async.o" \
 "same70b/gcc/system_same70q21b.o" \
 "hal/utils/src/utils_ringbuffer.o" \
 "hal/src/hal_gpio.o" \
@@ -199,6 +201,7 @@ DEPS_AS_ARGS +=  \
 "hpl/mcan/hpl_mcan.d" \
 "hpl/pmc/hpl_pmc.d" \
 "driver_init.d" \
+"hal/src/hal_usart_async.d" \
 "main.d" \
 "examples/driver_examples.d" \
 "hpl/hsmci/hpl_hsmci.d" \

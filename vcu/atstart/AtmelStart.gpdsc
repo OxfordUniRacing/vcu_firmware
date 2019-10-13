@@ -45,6 +45,7 @@
         <file category="doc" condition="ARMCC, GCC, IAR" name="hal/documentation/can_async.rst"/>
         <file category="doc" condition="ARMCC, GCC, IAR" name="hal/documentation/flash.rst"/>
         <file category="doc" condition="ARMCC, GCC, IAR" name="hal/documentation/mci_os.rst"/>
+        <file category="doc" condition="ARMCC, GCC, IAR" name="hal/documentation/usart_async.rst"/>
         <file category="doc" condition="ARMCC, GCC, IAR" name="hal/documentation/usart_os.rst"/>
         <file category="doc" condition="ARMCC, GCC, IAR" name="hal/documentation/usb_device_async.rst"/>
         <file category="header" condition="ARMCC, GCC, IAR" name="hal/include/hal_atomic.h"/>
@@ -173,12 +174,14 @@
         <file category="header" condition="ARMCC, GCC, IAR" name="atmel_start_pins.h"/>
         <file category="header" condition="ARMCC, GCC, IAR" name="examples/driver_examples.h"/>
         <file category="source" condition="ARMCC, GCC, IAR" name="examples/driver_examples.c"/>
+        <file category="header" condition="ARMCC, GCC, IAR" name="hal/include/hal_usart_async.h"/>
         <file category="header" condition="ARMCC, GCC, IAR" name="hal/include/hal_usart_os.h"/>
         <file category="header" condition="ARMCC, GCC, IAR" name="hal/include/hpl_missing_features.h"/>
         <file category="header" condition="ARMCC, GCC, IAR" name="hal/include/hpl_reset.h"/>
         <file category="header" condition="ARMCC, GCC, IAR" name="hal/include/hpl_usart_async.h"/>
         <file category="header" condition="ARMCC, GCC, IAR" name="hal/include/hpl_usart_dma.h"/>
         <file category="header" condition="ARMCC, GCC, IAR" name="hal/include/hpl_usart_sync.h"/>
+        <file category="source" condition="ARMCC, GCC, IAR" name="hal/src/hal_usart_async.c"/>
         <file category="source" condition="ARMCC, GCC, IAR" name="hal/src/hal_usart_os.c"/>
         <file category="header" condition="ARMCC, GCC, IAR" name="hal/utils/include/parts.h"/>
         <file category="source" condition="ARMCC, GCC, IAR" name="hpl/core/hpl_core_m7_base.c"/>

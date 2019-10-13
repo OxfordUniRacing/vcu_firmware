@@ -18,6 +18,9 @@ static int read_index;
 static volatile int read_avail;
 static volatile int write_stat;
 
+static SemaphoreHandle_t read_sem;
+static SemaphoreHandle_t write_sem;
+
 static bool usb_device_cb_bulk_out(const uint8_t ep, const enum usb_xfer_code rc, const uint32_t count) {
 	(void)ep;
 	BaseType_t xHigherPriorityTaskWoken = pdFALSE;
@@ -25,10 +28,12 @@ static bool usb_device_cb_bulk_out(const uint8_t ep, const enum usb_xfer_code rc
 	if (rc == USB_XFER_DONE) {
 		read_avail = count;
 	} else {
-		read_avail = -rc;
+		read_avail = -1;
+		log_warn("cdc_acm: out ep error: %d", rc);
 	}
 
-	vTaskNotifyGiveFromISR(usb_console_task_h, &xHigherPriorityTaskWoken);
+	xSemaphoreGiveFromISR(read_sem, &xHigherPriorityTaskWoken);
+	//vTaskNotifyGiveFromISR(usb_console_task_h, &xHigherPriorityTaskWoken);
 	portYIELD_FROM_ISR(xHigherPriorityTaskWoken);
 
 	return false;
@@ -39,41 +44,35 @@ static bool usb_device_cb_bulk_in(const uint8_t ep, const enum usb_xfer_code rc,
 	(void)count;
 	BaseType_t xHigherPriorityTaskWoken = pdFALSE;
 
-	if (rc == USB_XFER_DONE) {
-		write_stat = 0;
-	} else {
-		write_stat = -rc;
+	if (rc != USB_XFER_DONE) {
+		log_warn("cdc_acm: in ep error: %d", rc);
 	}
 
-	vTaskNotifyGiveFromISR(usb_console_task_h, &xHigherPriorityTaskWoken);
+	xSemaphoreGiveFromISR(write_sem, &xHigherPriorityTaskWoken);
+	//vTaskNotifyGiveFromISR(usb_console_task_h, &xHigherPriorityTaskWoken);
 	portYIELD_FROM_ISR(xHigherPriorityTaskWoken);
 
 	return false;
 }
 
-int cwrite(const void *src, unsigned int count) {
-	while (count > 0) {
-		int c = count;
-		if (c > BUF_SIZE) c = BUF_SIZE;
+int cwrite(const void *src, int count) {
+	while (count) {
+		int cnt = count;
+		if (cnt > BUF_SIZE) cnt = BUF_SIZE;
 
-		while (write_stat > 0)
-			ulTaskNotifyTake(pdTRUE, portMAX_DELAY);
-		if (write_stat < 0) {
-			log_warn("cdc_acm out ep error: %d", -write_stat);
-			return -1;
-		}
+		xSemaphoreTake(write_sem, portMAX_DELAY);
 
-		memcpy(write_buf, src, c);
+		memcpy(write_buf, src, cnt);
 
-		write_stat = 1;
-		int r = cdcdf_acm_write(write_buf, c);
+		int r = cdcdf_acm_write(write_buf, cnt);
 		if (r) {
-			log_warn("cdcdf_acm_write failed: %d", r);
+			log_warn("cdc_acm: cdcdf_acm_write failed: %d", r);
+			xSemaphoreGive(write_sem);
 			return -1;
 		}
 
-		count -= c;
-		src += c;
+		src += cnt;
+		count -= cnt;
 	}
 	return 0;
 }
@@ -85,51 +84,113 @@ int cprintf(const char *format, ...) {
 	int r = vsnprintf(buf, sizeof(buf), format, args);
 	if (r < 0) {
 		log_error("cprintf: vsnprintf error");
-		return r;
+		return -1;
 	}
-	if (r >= (int)sizeof(buf))
-		r = sizeof(buf)-1;
-	cwrite(buf, r);
+	r = min(r, (int)sizeof(buf)-1);
+	r = cwrite(buf, r);
 	va_end(args);
 	return r;
 }
 
+/*
+int cread_async(uint8_t *dst, int size) {
+	if (!read_avail) {
+		read_index = 0;
+		int r = cdcdf_acm_read(read_buf, BUF_SIZE);
+		if (r && r != USB_BUSY) {
+			log_warn("cdc_acm: cdcdf_acm_read failed: %d", r);
+			return -1;
+		} else {
+			return 0;
+		}
+	} else {
+		int cnt = min(read_avail, size);
+		memcpy(dst, read_buf + read_index, cnt);
+		read_index += cnt;
+		read_avail -= cnt;
+		return cnt;
+	}
+}
+
+int cread(uint8_t *dst, int size) {
+	int r = cread_async(dst, size);
+	if (r) return r;
+
+	while (!read_avail)
+		ulTaskNotifyTake(pdTRUE, portMAX_DELAY);
+
+	return cread_async(dst, size);
+}
+*/
+
+static int read_start(void) {
+	if (pdTRUE == xSemaphoreTake(read_sem, 0)) {
+		if (read_avail) {
+			xSemaphoreGive(read_sem);
+		} else {
+			read_index = 0;
+			read_avail = 0;
+			int r = cdcdf_acm_read(read_buf, BUF_SIZE);
+			if (r) {
+				xSemaphoreGive(read_sem);
+				log_warn("cdc_acm: cdcdf_acm_read failed: %d", r);
+				return -1;
+			}
+		}
+	}
+	return 0;
+}
+
+static void read_wait(void) {
+	xSemaphoreTake(read_sem, portMAX_DELAY);
+	xSemaphoreGive(read_sem);
+}
+
+int cgetc_async(void) {
+	if (read_avail > 0) {
+		read_avail--;
+		return read_buf[read_index++];
+	} else if (read_avail < 0) {
+		return -1;
+	} else {
+		return read_start();
+	}
+}
+
 int cgetc(void) {
 	if (!read_avail) {
-		int r = cdcdf_acm_read(read_buf, BUF_SIZE);
-		if (r) {
-			log_warn("cdcdf_acm_read failed: %d", r);
+		int r = read_start();
+		if (r < 0) return r;
+		read_wait();
+		if (read_avail <= 0)
 			return -1;
-		}
-
-		while (!read_avail)
-			ulTaskNotifyTake(pdTRUE, portMAX_DELAY);
-		if (read_avail < 0) {
-			log_warn("cdc_acm in ep error: %d", -read_avail);
-			return -1;
-		}
-
-		read_index = 0;
 	}
 
 	read_avail--;
 	return read_buf[read_index++];
 }
 
-int cgets(char *s, int size) {
-	int count = 0;
-	int c;
-	do {
-		c = cgetc();
-		if (c < 0) return -1;
-		if (count < size) {
-			s[count] = c;
-			count++;
-		}
-	} while (c != '\r' && c != '\n');
+int creadline(char *s, int size) {
+	int cursor = 0;
+	while (1) {
+		int c = cgetc();
+		if (c < 0) return c;
 
-	s[count-1] = '\0';
-	return count-1;
+		if (c == 0x7f) { // del
+			if (cursor > 0)	{
+				cursor--;
+				cwrite("\b \b", 3);
+			}
+		} else if (c == '\n' || c == '\r') {
+			s[cursor] = '\0';
+			cwrite(&c, 1);
+			return cursor;
+		} else if (cursor < size-1) {
+			s[cursor] = c;
+			cursor++;
+			cwrite(&c, 1);
+		}
+	};
 }
 
 static void usb_console_task(void *p) {
@@ -139,7 +200,11 @@ static void usb_console_task(void *p) {
 		while (!cdcdf_acm_is_enabled()) {
 			vTaskDelay(100);
 		}
-		log_info("usb cdc_acm enabled"); 
+		log_info("cdc_acm: enabled"); 
+
+		read_index = 0;
+		read_avail = 0;
+		write_stat = 0;
 
 		cdcdf_acm_register_callback(CDCDF_ACM_CB_READ, (FUNC_PTR)usb_device_cb_bulk_out);
 		cdcdf_acm_register_callback(CDCDF_ACM_CB_WRITE, (FUNC_PTR)usb_device_cb_bulk_in);
@@ -149,5 +214,9 @@ static void usb_console_task(void *p) {
 }
 
 void usb_console_init(void) {
-	xTaskCreate(usb_console_task, "", 1024, NULL, 1, &usb_console_task_h);
+	read_sem = xSemaphoreCreateBinary();
+	write_sem = xSemaphoreCreateBinary();
+	xSemaphoreGive(read_sem);
+	xSemaphoreGive(write_sem);
+	xTaskCreate(usb_console_task, "usb_console", 1024, NULL, 1, &usb_console_task_h);
 }

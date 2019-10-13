@@ -4,6 +4,7 @@
 #include "usb/usb.h"
 #include "usb/usb_drive.h"
 #include "usb/usb_console.h"
+#include "motor_controller.h"
 #include "log/msglog.h"
 
 int main(void) {
@@ -17,6 +18,8 @@ int main(void) {
 	NVIC_SetPriority(USBHS_IRQn, configLIBRARY_MAX_SYSCALL_INTERRUPT_PRIORITY);
 	NVIC_SetPriority(MCAN0_INT0_IRQn, configLIBRARY_MAX_SYSCALL_INTERRUPT_PRIORITY);
 	NVIC_SetPriority(MCAN0_INT1_IRQn, configLIBRARY_MAX_SYSCALL_INTERRUPT_PRIORITY);
+	NVIC_SetPriority(UART1_IRQn, configLIBRARY_MAX_SYSCALL_INTERRUPT_PRIORITY);
+	NVIC_SetPriority(UART2_IRQn, configLIBRARY_MAX_SYSCALL_INTERRUPT_PRIORITY);
 
 	_pmc_enable_periph_clock(ID_PIOB);
 
@@ -25,6 +28,8 @@ int main(void) {
 
 	log_init();
 	log_debug("startup");
+
+	mc_init();
 
 	usb_drive_init();
 	usb_console_init();

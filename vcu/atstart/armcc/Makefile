@@ -78,6 +78,7 @@ usb/device/usbdc.o \
 sd_mmc/sd_mmc.o \
 examples/driver_examples.o \
 driver_init.o \
+hal/src/hal_usart_async.o \
 hal/utils/src/utils_ringbuffer.o \
 hal/src/hal_gpio.o \
 hpl/hsmci/hpl_hsmci.o \
@@ -119,6 +120,7 @@ OBJS_AS_ARGS +=  \
 "sd_mmc/sd_mmc.o" \
 "examples/driver_examples.o" \
 "driver_init.o" \
+"hal/src/hal_usart_async.o" \
 "hal/utils/src/utils_ringbuffer.o" \
 "hal/src/hal_gpio.o" \
 "hpl/hsmci/hpl_hsmci.o" \
@@ -160,6 +162,7 @@ DEPS_AS_ARGS +=  \
 "hpl/mcan/hpl_mcan.d" \
 "hpl/pmc/hpl_pmc.d" \
 "driver_init.d" \
+"hal/src/hal_usart_async.d" \
 "main.d" \
 "examples/driver_examples.d" \
 "hpl/hsmci/hpl_hsmci.d" \

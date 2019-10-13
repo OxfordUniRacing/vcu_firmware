@@ -15,6 +15,7 @@ endif
 # Compile flags
 CPPFLAGS += -MD -MP
 CFLAGS += -Wall -Wextra -Wmissing-prototypes -Wstrict-prototypes
+CFLAGS += -Werror=implicit-function-declaration
 CFLAGS += -fno-common -ffunction-sections -fdata-sections -std=gnu99
 LDFLAGS += --static -Wl,--gc-sections --specs=nosys.specs
 
@@ -27,6 +28,7 @@ subdirs = $(patsubst %/,%,$(filter %/,$(wildcard $(1)/*/)))
 
 # Include directories
 INC_DIRS := \
+freertos \
 freertos/include \
 hal_rtos \
 atstart/thirdparty/RTOS \

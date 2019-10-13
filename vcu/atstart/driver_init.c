@@ -21,17 +21,21 @@
  */
 #define PERIPHERAL_INTERRUPT_PRIORITY (configLIBRARY_LOWEST_INTERRUPT_PRIORITY - 1)
 
-struct can_async_descriptor CAN_0;
+/*! The buffer size for USART */
+#define UART_MC_1_BUFFER_SIZE 16
+/*! The buffer size for USART */
+#define UART_MC_2_BUFFER_SIZE 16
+
+struct usart_async_descriptor UART_MC_1;
+struct usart_async_descriptor UART_MC_2;
+struct can_async_descriptor   CAN_0;
+
+static uint8_t UART_MC_1_buffer[UART_MC_1_BUFFER_SIZE];
+static uint8_t UART_MC_2_buffer[UART_MC_2_BUFFER_SIZE];
 
 struct flash_descriptor FLASH;
 
 struct mci_os_desc IO_BUS;
-
-struct usart_os_descriptor UART_MC_1;
-uint8_t                    UART_MC_1_buffer[UART_MC_1_BUFFER_SIZE];
-
-struct usart_os_descriptor UART_MC_2;
-uint8_t                    UART_MC_2_buffer[UART_MC_2_BUFFER_SIZE];
 
 struct usart_os_descriptor USART_EDBG;
 uint8_t                    USART_EDBG_buffer[USART_EDBG_BUFFER_SIZE];
@@ -273,7 +277,22 @@ void IO_BUS_init(void)
 	IO_BUS_PORT_init();
 }
 
-void UART_MC_1_PORT_init(void)
+/**
+ * \brief USART Clock initialization function
+ *
+ * Enables register interface and peripheral clock
+ */
+void UART_MC_1_CLOCK_init()
+{
+	_pmc_enable_periph_clock(ID_UART1);
+}
+
+/**
+ * \brief USART pinmux initialization function
+ *
+ * Set each required pin to USART functionality
+ */
+void UART_MC_1_PORT_init()
 {
 
 	gpio_set_pin_function(PA5, MUX_PA5C_UART1_URXD1);
@@ -281,21 +300,34 @@ void UART_MC_1_PORT_init(void)
 	gpio_set_pin_function(PA6, MUX_PA6C_UART1_UTXD1);
 }
 
-void UART_MC_1_CLOCK_init(void)
-{
-	_pmc_enable_periph_clock(ID_UART1);
-}
-
+/**
+ * \brief USART initialization function
+ *
+ * Enables USART peripheral, clocks and initializes USART driver
+ */
 void UART_MC_1_init(void)
 {
 	UART_MC_1_CLOCK_init();
-	usart_os_init(&UART_MC_1, UART1, UART_MC_1_buffer, UART_MC_1_BUFFER_SIZE, (void *)_uart_get_usart_async());
-	usart_os_enable(&UART_MC_1);
+	usart_async_init(&UART_MC_1, UART1, UART_MC_1_buffer, UART_MC_1_BUFFER_SIZE, _uart_get_usart_async());
 	UART_MC_1_PORT_init();
-	NVIC_SetPriority(UART1_IRQn, PERIPHERAL_INTERRUPT_PRIORITY);
 }
 
-void UART_MC_2_PORT_init(void)
+/**
+ * \brief USART Clock initialization function
+ *
+ * Enables register interface and peripheral clock
+ */
+void UART_MC_2_CLOCK_init()
+{
+	_pmc_enable_periph_clock(ID_UART2);
+}
+
+/**
+ * \brief USART pinmux initialization function
+ *
+ * Set each required pin to USART functionality
+ */
+void UART_MC_2_PORT_init()
 {
 
 	gpio_set_pin_function(PD25, MUX_PD25C_UART2_URXD2);
@@ -303,18 +335,16 @@ void UART_MC_2_PORT_init(void)
 	gpio_set_pin_function(PD26, MUX_PD26C_UART2_UTXD2);
 }
 
-void UART_MC_2_CLOCK_init(void)
-{
-	_pmc_enable_periph_clock(ID_UART2);
-}
-
+/**
+ * \brief USART initialization function
+ *
+ * Enables USART peripheral, clocks and initializes USART driver
+ */
 void UART_MC_2_init(void)
 {
 	UART_MC_2_CLOCK_init();
-	usart_os_init(&UART_MC_2, UART2, UART_MC_2_buffer, UART_MC_2_BUFFER_SIZE, (void *)_uart_get_usart_async());
-	usart_os_enable(&UART_MC_2);
+	usart_async_init(&UART_MC_2, UART2, UART_MC_2_buffer, UART_MC_2_BUFFER_SIZE, _uart_get_usart_async());
 	UART_MC_2_PORT_init();
-	NVIC_SetPriority(UART2_IRQn, PERIPHERAL_INTERRUPT_PRIORITY);
 }
 
 void USART_EDBG_PORT_init(void)
@@ -421,7 +451,6 @@ void system_init(void)
 	IO_BUS_init();
 
 	UART_MC_1_init();
-
 	UART_MC_2_init();
 
 	USART_EDBG_init();
