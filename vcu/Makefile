@@ -31,8 +31,6 @@ INC_DIRS := \
 freertos \
 freertos/include \
 hal_rtos \
-atstart/thirdparty/RTOS \
-atstart/thirdparty/RTOS/freertos/FreeRTOSV10.0.0 \
 atstart/config \
 atstart/CMSIS/Core/Include \
 atstart/same70b/include \
@@ -59,7 +57,6 @@ SRC_DIRS := \
 startup \
 freertos \
 hal_rtos \
-atstart/thirdparty/RTOS/freertos/FreeRTOSV10.0.0 \
 $(call subdirs,atstart/hpl) \
 atstart/hal/utils/src \
 atstart/hal/src \
@@ -68,7 +65,6 @@ atstart/usb/class/cdc/device \
 atstart/usb/device \
 atstart/usb \
 atstart/sd_mmc \
-atstart/diskio \
 atstart \
 fatfs \
 eeprom \
@@ -81,8 +77,7 @@ SRC_EXCLUDES := \
 atstart/rtos_start.c \
 atstart/usb_start.c \
 atstart/main.c \
-atstart/hal/utils/src/utils_assert.c \
-./main.c
+atstart/hal/utils/src/utils_assert.c
 
 INCS := $(INC_DIRS:%=-I%)
 SRCS := $(foreach dir,$(SRC_DIRS),$(wildcard $(dir)/*.c))
@@ -122,7 +117,7 @@ $(BUILD_DIR)/atstart/hpl/usbhs/hpl_usbhs.o: atstart/hpl/usbhs/hpl_usbhs.c
 	@printf "  CC      $(<)\n"
 	$(Q)$(CC) -include usb/memcpy_usb.h $(CPPFLAGS) $(DEFS) $(INCS) $(CFLAGS) $(ARCH_FLAGS) -o $(@) -c $(<)
 
-$(BUILD_DIR)/$(OUTPUT_FILE_NAME).elf: $(OBJS) $(BUILD_DIR)/main.o
+$(BUILD_DIR)/$(OUTPUT_FILE_NAME).elf: $(OBJS)
 	@printf "  LD      $(@)\n"
 	$(Q)$(LD) -o $(@) $(^) -Wl,-Map="$(@:.elf=.map)" $(LDFLAGS) $(ARCH_FLAGS)
 	@printf "  OBJCOPY $(@:.elf=.bin)\n"
