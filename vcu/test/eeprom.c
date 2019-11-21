@@ -1,7 +1,7 @@
 #include "atmel_start.h"
 
 #include "eeprom/eeprom_emu.h"
-#include "log/msglog.h"
+#include "log_msg.h"
 
 #include "FreeRTOS.h"
 #include "task.h"

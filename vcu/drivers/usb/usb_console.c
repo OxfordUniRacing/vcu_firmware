@@ -5,7 +5,7 @@
 #include <stdio.h>
 #include <stdarg.h>
 
-#include "log/msglog.h"
+#include "log_msg.h"
 #include "usb/usb_console.h"
 
 #define BUF_SIZE CONF_USB_CDCD_ACM_DATA_BULKIN_MAXPKSZ_HS

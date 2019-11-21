@@ -17,7 +17,7 @@
 #include "task.h"
 #include "queue.h"
 
-#include "log/msglog.h"
+#include "log_msg.h"
 #include "motor_controller.h"
 
 // TODO verify newline char and line len with motor controller hardware

@@ -5,7 +5,7 @@
 #include "usb/usb_drive.h"
 #include "usb/usb_console.h"
 #include "motor_controller.h"
-#include "log/msglog.h"
+#include "log_msg.h"
 
 int main(void) {
 	// TODO don't hardcode address

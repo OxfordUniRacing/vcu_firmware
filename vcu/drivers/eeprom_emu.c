@@ -1,7 +1,6 @@
 #include "eeprom_emu.h"
 #include "atmel_start.h"
 
-
 #define BLOCK_MAGIC 0x00703265
 #define FLASH_BLOCK_SIZE 8192
 #define BLOCK_SIZE (FLASH_BLOCK_SIZE-4)

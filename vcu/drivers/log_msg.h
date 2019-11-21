@@ -1,5 +1,5 @@
-#ifndef MSGLOG_H
-#define MSGLOG_H
+#ifndef LOG_MSG_H
+#define LOG_MSG_H
 
 #include "FreeRTOS.h"
 #include "stream_buffer.h"
@@ -15,4 +15,4 @@ extern StreamBufferHandle_t msglog_buffer;
 void log_init(void);
 void log_log(int level, const char *fmt, ...);
 
-#endif // MSGLOG_H
+#endif // LOG_MSG_H

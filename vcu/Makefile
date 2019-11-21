@@ -22,15 +22,16 @@ LDFLAGS += --static -Wl,--gc-sections --specs=nosys.specs
 # Target specific flags
 DEFS += -D__SAME70Q21B__
 ARCH_FLAGS := -mthumb -mcpu=cortex-m7 -mfloat-abi=hard -mfpu=fpv5-d16
-LDFLAGS += -Tstartup/same70q21b_flash.ld
+LDFLAGS += -Tthirdparty/startup/same70q21b_flash.ld
 
 subdirs = $(patsubst %/,%,$(filter %/,$(wildcard $(1)/*/)))
 
 # Include directories
 INC_DIRS := \
-freertos \
-freertos/include \
-hal_rtos \
+thirdparty/freertos \
+thirdparty/freertos/include \
+thirdparty/hal_rtos \
+thirdparty/fatfs \
 atstart/config \
 atstart/CMSIS/Core/Include \
 atstart/same70b/include \
@@ -46,17 +47,18 @@ atstart/usb/device \
 atstart/usb \
 atstart/sd_mmc \
 atstart \
-fatfs \
-eeprom \
-log \
-usb \
-.
+drivers \
+$(call subdirs,drivers) \
+framework \
+app
+
 
 # Source directories
 SRC_DIRS := \
-startup \
-freertos \
-hal_rtos \
+thirdparty/startup \
+thirdparty/freertos \
+thirdparty/hal_rtos \
+thirdparty/fatfs \
 $(call subdirs,atstart/hpl) \
 atstart/hal/utils/src \
 atstart/hal/src \
@@ -66,18 +68,18 @@ atstart/usb/device \
 atstart/usb \
 atstart/sd_mmc \
 atstart \
-fatfs \
-eeprom \
-log \
-usb \
-.
+drivers \
+$(call subdirs,drivers) \
+framework \
+app
 
 # Sources files excluded from compiling
 SRC_EXCLUDES := \
 atstart/rtos_start.c \
 atstart/usb_start.c \
 atstart/main.c \
-atstart/hal/utils/src/utils_assert.c
+atstart/hal/utils/src/utils_assert.c \
+app/main.c
 
 INCS := $(INC_DIRS:%=-I%)
 SRCS := $(foreach dir,$(SRC_DIRS),$(wildcard $(dir)/*.c))
@@ -117,7 +119,7 @@ $(BUILD_DIR)/atstart/hpl/usbhs/hpl_usbhs.o: atstart/hpl/usbhs/hpl_usbhs.c
 	@printf "  CC      $(<)\n"
 	$(Q)$(CC) -include usb/memcpy_usb.h $(CPPFLAGS) $(DEFS) $(INCS) $(CFLAGS) $(ARCH_FLAGS) -o $(@) -c $(<)
 
-$(BUILD_DIR)/$(OUTPUT_FILE_NAME).elf: $(OBJS)
+$(BUILD_DIR)/$(OUTPUT_FILE_NAME).elf: $(OBJS) $(BUILD_DIR)/app/main.o
 	@printf "  LD      $(@)\n"
 	$(Q)$(LD) -o $(@) $(^) -Wl,-Map="$(@:.elf=.map)" $(LDFLAGS) $(ARCH_FLAGS)
 	@printf "  OBJCOPY $(@:.elf=.bin)\n"

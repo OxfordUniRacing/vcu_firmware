@@ -4,7 +4,7 @@
 
 #include <string.h>
 
-#include "log/msglog.h"
+#include "log_msg.h"
 #include "motor_controller.h"
 #include "usb/usb_console.h"
 

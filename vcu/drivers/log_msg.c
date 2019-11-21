@@ -8,7 +8,7 @@
 #include "atmel_start.h"
 #include "utils.h"
 
-#include "log/msglog.h"
+#include "log_msg.h"
 
 #include "config.h"
 
