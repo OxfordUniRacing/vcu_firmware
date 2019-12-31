@@ -47,10 +47,8 @@ atstart/usb/device \
 atstart/usb \
 atstart/sd_mmc \
 atstart \
-drivers \
-$(call subdirs,drivers) \
-framework \
-app
+driver/include \
+.
 
 
 # Source directories
@@ -68,10 +66,12 @@ atstart/usb/device \
 atstart/usb \
 atstart/sd_mmc \
 atstart \
-drivers \
-$(call subdirs,drivers) \
+driver \
+$(call subdirs,driver) \
 framework \
-app
+$(call subdirs,framework) \
+app \
+$(call subdirs,app)
 
 # Sources files excluded from compiling
 SRC_EXCLUDES := \
@@ -117,7 +117,7 @@ $(BUILD_DIR)/%.o: %.c
 
 $(BUILD_DIR)/atstart/hpl/usbhs/hpl_usbhs.o: atstart/hpl/usbhs/hpl_usbhs.c
 	@printf "  CC      $(<)\n"
-	$(Q)$(CC) -include usb/memcpy_usb.h $(CPPFLAGS) $(DEFS) $(INCS) $(CFLAGS) $(ARCH_FLAGS) -o $(@) -c $(<)
+	$(Q)$(CC) -include memcpy_usb.h $(CPPFLAGS) $(DEFS) $(INCS) $(CFLAGS) $(ARCH_FLAGS) -o $(@) -c $(<)
 
 $(BUILD_DIR)/$(OUTPUT_FILE_NAME).elf: $(OBJS) $(BUILD_DIR)/app/main.o
 	@printf "  LD      $(@)\n"

@@ -4,9 +4,9 @@
 
 #include <string.h>
 
-#include "log_msg.h"
-#include "motor_controller.h"
-#include "usb/usb_console.h"
+#include "driver/log_msg.h"
+#include "driver/usb/usb_console.h"
+#include "app/motor_controller.h"
 
 #define guard(x) if (x < 0) return x;
 

@@ -1,7 +1,7 @@
 #include "eeprom_emu.h"
 #include "atmel_start.h"
 
-#define BLOCK_MAGIC 0x00703265
+#define BLOCK_MAGIC 0x6d703265
 #define FLASH_BLOCK_SIZE 8192
 #define BLOCK_SIZE (FLASH_BLOCK_SIZE-4)
 
@@ -37,16 +37,30 @@ void eeprom_emu_init() {
 
 void eeprom_emu_read(uint32_t src_addr, uint8_t *p, uint32_t length) {
 	ASSERT(cur_block >= 0);
-	ASSERT(src_addr + length < BLOCK_SIZE);
+	ASSERT(src_addr + length <= BLOCK_SIZE);
 
 	memcpy(p, buffer.d + src_addr, length);
 }
 
+uint32_t eeprom_emu_read32(uint32_t src_addr) {
+	ASSERT(cur_block >= 0);
+	ASSERT(src_addr+4 <= BLOCK_SIZE);
+
+	return *((uint32_t *)(buffer.d + src_addr));
+}
+
 void eeprom_emu_write(uint32_t dest_addr, const uint8_t *p, uint32_t length) {
 	ASSERT(cur_block >= 0);
-	ASSERT(dest_addr + length < BLOCK_SIZE);
+	ASSERT(dest_addr + length <= BLOCK_SIZE);
 
 	memcpy(buffer.d + dest_addr, p, length);
+}
+
+void eeprom_emu_write32(uint32_t src_addr, uint32_t d) {
+	ASSERT(cur_block >= 0);
+	ASSERT(src_addr+4 <= BLOCK_SIZE);
+
+	*((uint32_t *)(buffer.d + src_addr)) = d;
 }
 
 void eeprom_emu_commit() {

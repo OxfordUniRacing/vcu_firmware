@@ -1,0 +1,11 @@
+Id,Name,Count,Type,Transfer function,Comment
+0,mc_pwm,2,float,NULL,
+2,mc_volt,2,float,NULL,
+4,mc_curr,2,float,NULL,
+6,mc_rpm,2,float,NULL,
+8,mc_temp_con,2,float,NULL,
+10,mc_temp_mot,2,float,NULL,
+12,brake_pressure,1,float,sensor_trans_linear,
+13,brake_pos,1,float,sensor_trans_linear,
+14,throttle_pos,2,float,sensor_trans_linear,
+16,steering_pos,1,float,sensor_trans_linear,

@@ -5,8 +5,8 @@
 #include <stdio.h>
 #include <stdarg.h>
 
-#include "log_msg.h"
-#include "usb/usb_console.h"
+#include "driver/usb/usb_console.h"
+#include "driver/log_msg.h"
 
 #define BUF_SIZE CONF_USB_CDCD_ACM_DATA_BULKIN_MAXPKSZ_HS
 

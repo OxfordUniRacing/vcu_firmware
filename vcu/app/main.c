@@ -1,11 +1,11 @@
 #include "atmel_start.h"
 #include "hpl_pmc.h"
 
-#include "usb/usb.h"
-#include "usb/usb_drive.h"
-#include "usb/usb_console.h"
-#include "motor_controller.h"
-#include "log_msg.h"
+#include "driver/usb/usb.h"
+#include "driver/usb/usb_drive.h"
+#include "driver/usb/usb_console.h"
+#include "driver/log_msg.h"
+#include "app/motor_controller.h"
 
 int main(void) {
 	// TODO don't hardcode address

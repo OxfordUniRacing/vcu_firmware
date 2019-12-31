@@ -1,0 +1,3 @@
+"Offset","Name","Comment"
+2048,"calib_start","Area for sensor calibration parameters, space for 512 parameters"
+4096,"calib_end",

@@ -1,6 +1,7 @@
 #include "atmel_start.h"
-#include "usb/usb.h"
-#include "usb/usb_desc.h"
+
+#include "usb.h"
+#include "usb_desc.h"
 
 /* Max LUN number */
 #define CONF_USB_MSC_MAX_LUN 0
