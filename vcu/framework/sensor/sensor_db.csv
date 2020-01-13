@@ -1,11 +1,19 @@
-Id,Name,Count,Type,Transfer function,Comment
-0,mc_pwm,2,float,NULL,
-2,mc_volt,2,float,NULL,
-4,mc_curr,2,float,NULL,
-6,mc_rpm,2,float,NULL,
-8,mc_temp_con,2,float,NULL,
-10,mc_temp_mot,2,float,NULL,
-12,brake_pressure,1,float,sensor_trans_linear,
-13,brake_pos,1,float,sensor_trans_linear,
-14,throttle_pos,2,float,sensor_trans_linear,
-16,steering_pos,1,float,sensor_trans_linear,
+"Id","Name","Count","Type","Transfer function","Comment",
+0,"mc_pwm",2,"float","NULL",,
+2,"mc_volt",2,"float","NULL",,
+4,"mc_curr",2,"float","NULL",,
+6,"mc_rpm",2,"float","NULL",,
+8,"mc_temp_con",2,"float","NULL",,
+10,"mc_temp_mot",2,"float","NULL",,
+12,"brake_pressure",1,"float","sensor_trans_linear",,
+13,"brake_pos",1,"float","sensor_trans_linear",,
+14,"throttle_pos",2,"float","sensor_trans_linear",,
+16,"steering_pos",1,"float","sensor_trans_linear",,
+20,"temp_r_in",1,"float","sensor_trans_linear","PC31","AFE1_AD6"
+21,"temp_r_out",1,"float","sensor_trans_linear","PC13","AFE1_AD1"
+22,"temp_l_in",1,"float","sensor_trans_linear","PC12","AFE1_AD3"
+23,"temp_l_out",1,"float","sensor_trans_linear","PC30","AFE1_AD5"
+24,"pres_r_in",1,"float","sensor_trans_linear","PA19","AFE0_AD8"
+25,"pres_r_out",1,"float","sensor_trans_linear","PD30","AFE0_AD0"
+26,"pres_l_in",1,"float","sensor_trans_linear","PB0","AFE0_AD10"
+27,"pres_l_out",1,"float","sensor_trans_linear","PB1","AFE1_AD0"

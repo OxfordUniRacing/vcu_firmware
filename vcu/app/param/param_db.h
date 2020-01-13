@@ -3,14 +3,16 @@
 #ifndef APP_PARAM_PARAM_DB_H
 #define APP_PARAM_PARAM_DB_H
 
-#include <stdint.h>
+#include "framework/sensor/param_db_calib.h"
 
 struct param_info_t {
 	char *name;
 	uint32_t offset;
 };
 
+extern struct param_info_t param_info[];
+
 #define PARAM_CALIB_START 2048
 #define PARAM_CALIB_END 4096
-
+#define PARAM_INFO_COUNT (2 + PARAM_INFO_CALIB_COUNT)
 #endif

@@ -1,11 +1,12 @@
-#include "sensor.h"
-#include "sensor_db.h"
+#include <stdint.h>
 
 #include "utils_assert.h"
 #include "FreeRTOS.h"
 #include "task.h"
 
-#include <stdint.h>
+#include "sensor.h"
+#include "sensor_db.h"
+#include "app/param/param.h"
 
 #define BOUNDS_CHECK(i) ASSERT(((unsigned int)i) < SENSOR_MAX_NUM)
 
@@ -28,7 +29,7 @@ void sensor_update_b(int ind, bool val) {
 	sensor_timestamps[ind] = xTaskGetTickCount();
 }
 
-void sensor_update_raw(int ind, uint32_t val) {
+void sensor_update_raw(int ind, int val) {
 	BOUNDS_CHECK(ind);
 	ASSERT(sensor_trans_fns[ind] != NULL);
 	sensor_states[ind].f = sensor_trans_fns[ind](ind, val);
@@ -36,7 +37,9 @@ void sensor_update_raw(int ind, uint32_t val) {
 }
 
 
-float sensor_trans_linear(int ind, uint32_t val) {
-	// TODO
-	return 0;
+float sensor_trans_linear(int ind, int val) {
+	int param_addr = 2048 + ind*8;
+	float m = param_read_float(param_addr);
+	float c = param_read_float(param_addr+4);
+	return m*val + c;
 }

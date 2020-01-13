@@ -76,18 +76,23 @@ with open('sensor_db.c', 'w') as file:
     file.write("};\n")
 
 
-with open('param_calib.h', 'w') as file:
+with open('param_db_calib.h', 'w') as hdr, open('param_db_calib.c', 'w') as src:
     d = {}
+    count = 0
     for i, t in trans.items():
         if t == "sensor_trans_linear":
-            offset = 2048 + i*4
-            d[offset] = "calib_" + names[i]
+            offset = 2048 + i*8
+            d[offset] = "calib_" + names[i] + "_m"
+            d[offset+4] = "calib_" + names[i] + "_c"
+            count += 2
 
     for ofst, name in d.items():
-        file.write("#define PARAM_{} {}\n".format(name.upper(), ofst))
-    file.write("\n")
+        hdr.write("#define PARAM_{} {}\n".format(name.upper(), ofst))
+    hdr.write("\n")
 
-    file.write("#define PARAM_INFO_CALIB \\\n")
+    hdr.write("#define PARAM_INFO_CALIB_COUNT {}\n\n".format(count))
+
+    src.write("#define PARAM_INFO_CALIB \\\n")
     for ofst, name in d.items():
-        file.write('\t{{"param_{}", {}}}, \\\n'.format(name, ofst))
-    file.write("\n")
+        src.write('\t{{"param_{}", {}}}, \\\n'.format(name, ofst))
+    src.write("\n")
