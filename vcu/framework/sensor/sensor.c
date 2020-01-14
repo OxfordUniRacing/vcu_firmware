@@ -6,7 +6,8 @@
 
 #include "sensor.h"
 #include "sensor_db.h"
-#include "app/param/param.h"
+#include "framework/param/param.h"
+#include "framework/param/param_db.h"
 
 #define BOUNDS_CHECK(i) ASSERT(((unsigned int)i) < SENSOR_MAX_NUM)
 
@@ -38,7 +39,7 @@ void sensor_update_raw(int ind, int val) {
 
 
 float sensor_trans_linear(int ind, int val) {
-	int param_addr = 2048 + ind*8;
+	int param_addr = PARAM_CALIB_START + ind*8;
 	float m = param_read_float(param_addr);
 	float c = param_read_float(param_addr+4);
 	return m*val + c;
