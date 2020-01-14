@@ -21,14 +21,52 @@
  */
 #define PERIPHERAL_INTERRUPT_PRIORITY (configLIBRARY_LOWEST_INTERRUPT_PRIORITY - 1)
 
+/* The channel amount for ADC */
+#define ADC_0_CH_AMOUNT 0
+
+/* The buffer size for ADC */
+
+/* The maximal channel number of enabled channels */
+
+/* The channel amount for ADC */
+#define ADC_1_CH_AMOUNT 0
+
+/* The buffer size for ADC */
+
+/* The maximal channel number of enabled channels */
+
 /*! The buffer size for USART */
 #define UART_MC_1_BUFFER_SIZE 16
 /*! The buffer size for USART */
 #define UART_MC_2_BUFFER_SIZE 16
 
+struct adc_async_descriptor ADC_0;
+#if ADC_0_CH_AMOUNT < 1
+/* Avoid compiling errors. */
+struct adc_async_channel_descriptor ADC_0_ch[1];
+#warning none of ADC channel is enabled, please check
+#else
+struct adc_async_channel_descriptor ADC_0_ch[ADC_0_CH_AMOUNT];
+#endif
+struct adc_async_descriptor ADC_1;
+#if ADC_1_CH_AMOUNT < 1
+/* Avoid compiling errors. */
+struct adc_async_channel_descriptor ADC_1_ch[1];
+#warning none of ADC channel is enabled, please check
+#else
+struct adc_async_channel_descriptor ADC_1_ch[ADC_1_CH_AMOUNT];
+#endif
 struct usart_async_descriptor UART_MC_1;
 struct usart_async_descriptor UART_MC_2;
 struct can_async_descriptor   CAN_0;
+
+#ifdef ADC_0_CH_MAX
+static uint8_t ADC_0_map[ADC_0_CH_MAX + 1];
+#endif
+
+#ifdef ADC_1_CH_MAX
+static uint8_t ADC_1_map[ADC_1_CH_MAX + 1];
+#endif
 
 static uint8_t UART_MC_1_buffer[UART_MC_1_BUFFER_SIZE];
 static uint8_t UART_MC_2_buffer[UART_MC_2_BUFFER_SIZE];
@@ -39,6 +77,48 @@ struct mci_os_desc IO_BUS;
 
 struct usart_os_descriptor USART_EDBG;
 uint8_t                    USART_EDBG_buffer[USART_EDBG_BUFFER_SIZE];
+
+/**
+ * \brief ADC initialization function
+ *
+ * Enables ADC peripheral, clocks and initializes ADC driver
+ */
+static void ADC_0_init(void)
+{
+	_pmc_enable_periph_clock(ID_AFEC0);
+#ifdef ADC_0_CH_MAX
+	adc_async_init(&ADC_0, AFEC0, ADC_0_map, ADC_0_CH_MAX, ADC_0_CH_AMOUNT, &ADC_0_ch[0], (void *)NULL);
+#endif
+
+	gpio_set_pin_function(PD30, GPIO_PIN_FUNCTION_OFF);
+
+	gpio_set_pin_function(PA19, GPIO_PIN_FUNCTION_OFF);
+
+	gpio_set_pin_function(PB0, GPIO_PIN_FUNCTION_OFF);
+}
+
+/**
+ * \brief ADC initialization function
+ *
+ * Enables ADC peripheral, clocks and initializes ADC driver
+ */
+static void ADC_1_init(void)
+{
+	_pmc_enable_periph_clock(ID_AFEC1);
+#ifdef ADC_1_CH_MAX
+	adc_async_init(&ADC_1, AFEC1, ADC_1_map, ADC_1_CH_MAX, ADC_1_CH_AMOUNT, &ADC_1_ch[0], (void *)NULL);
+#endif
+
+	gpio_set_pin_function(PB1, GPIO_PIN_FUNCTION_OFF);
+
+	gpio_set_pin_function(PC13, GPIO_PIN_FUNCTION_OFF);
+
+	gpio_set_pin_function(PC12, GPIO_PIN_FUNCTION_OFF);
+
+	gpio_set_pin_function(PC30, GPIO_PIN_FUNCTION_OFF);
+
+	gpio_set_pin_function(PC31, GPIO_PIN_FUNCTION_OFF);
+}
 
 void FLASH_CLOCK_init(void)
 {
@@ -445,6 +525,9 @@ void system_init(void)
 	                       GPIO_PULL_OFF);
 
 	gpio_set_pin_function(CARD_DETECT_0, GPIO_PIN_FUNCTION_OFF);
+
+	ADC_0_init();
+	ADC_1_init();
 
 	FLASH_init();
 

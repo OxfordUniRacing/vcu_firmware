@@ -199,7 +199,7 @@ void mc_init(void) {
 	for (int i = 0; i < MC_COUNT; i++) {
 		struct mc_inst_t *mc = &mc_inst[i];
 		mc->uart = &uart_hal_descs[i]->device;
-		xTaskCreate(mc_task, "mc", 1024, mc, 2, &mc->task);
+		xTaskCreate(mc_task, "mc", 1024, mc, 3, &mc->task);
 	}
 }
 

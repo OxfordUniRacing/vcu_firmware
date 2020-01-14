@@ -76,7 +76,7 @@ with open('sensor_db.c', 'w') as file:
     file.write("};\n")
 
 
-with open('param_db_calib.h', 'w') as hdr, open('param_db_calib.c', 'w') as src:
+with open('param_db_calib.h', 'w') as hdr, open('param_db_calib.c.h', 'w') as src:
     d = {}
     count = 0
     for i, t in trans.items():
@@ -94,5 +94,5 @@ with open('param_db_calib.h', 'w') as hdr, open('param_db_calib.c', 'w') as src:
 
     src.write("#define PARAM_INFO_CALIB \\\n")
     for ofst, name in d.items():
-        src.write('\t{{"param_{}", {}}}, \\\n'.format(name, ofst))
+        src.write('\t{{"{}", {}}}, \\\n'.format(name, ofst))
     src.write("\n")

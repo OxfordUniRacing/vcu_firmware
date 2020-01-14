@@ -16,6 +16,10 @@
 extern "C" {
 #endif
 
+void ADC_0_example(void);
+
+void ADC_1_example(void);
+
 void FLASH_example(void);
 
 void UART_MC_1_example(void);

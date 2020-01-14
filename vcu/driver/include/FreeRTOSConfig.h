@@ -1,4 +1,3 @@
-/* Auto-generated config file FreeRTOSConfig.h */
 #ifndef FREERTOSCONFIG_H
 #define FREERTOSCONFIG_H
 
@@ -19,7 +18,7 @@
 // <i> Default: 5
 // <id> freertos_max_priorities
 #ifndef configMAX_PRIORITIES
-#define configMAX_PRIORITIES (5)
+#define configMAX_PRIORITIES (8)
 #endif
 
 // <o> Minimal stack size<64-1024>
@@ -27,7 +26,7 @@
 // <i> Default: 64
 // <id> freertos_minimal_stack_size
 #ifndef configMINIMAL_STACK_SIZE
-#define configMINIMAL_STACK_SIZE ((uint16_t)64)
+#define configMINIMAL_STACK_SIZE ((uint16_t)256)
 #endif
 
 /* configTOTAL_HEAP_SIZE is not used when heap_3.c is used. */
@@ -130,7 +129,7 @@
 // <i> default is not supposed for Cortex-M0
 // <id> freertos_use_port_optimised_functions
 #ifndef configUSE_PORT_OPTIMISED_TASK_SELECTION
-#define configUSE_PORT_OPTIMISED_TASK_SELECTION 0
+#define configUSE_PORT_OPTIMISED_TASK_SELECTION 1
 #endif
 
 // <q> Use application task tag functions
@@ -171,10 +170,10 @@
 // <i> Default is 2
 // <id> freertos_timer_task_priority
 #ifndef configTIMER_TASK_PRIORITY
-#define configTIMER_TASK_PRIORITY (2)
+#define configTIMER_TASK_PRIORITY (4)
 #endif
 
-#define configTIMER_QUEUE_LENGTH 2
+#define configTIMER_QUEUE_LENGTH 4
 
 // <o> Timer task stack size <32-512:4>
 // <i> Default is 64

@@ -2,12 +2,17 @@ format_version: '2'
 name: My Project
 versions:
   api: '1.0'
-  backend: 1.6.148
-  commit: 605f106ab95776472e3febf2fac2471441fb1816
-  content: 1.0.1635
-  content_pack_name: acme-packs-all
+  backend: 1.7.279
+  commit: 1e07622763d149970fd8808a8f12ff3b1e84e0d7
+  content: unknown
+  content_pack_name: unknown
   format: '2'
-  frontend: 1.6.1884
+  frontend: 1.7.279
+  packs_version_avr8: 1.0.1401
+  packs_version_qtouch: unknown
+  packs_version_sam: 1.0.1373
+  version_backend: 1.7.279
+  version_frontend: ''
 board:
   identifier: SAME70Xplained
   device: ATSAME70Q21B-AN
@@ -166,6 +171,314 @@ middlewares:
       Write Protect 0: null
       Card Detect 0: CARD_DETECT_0
 drivers:
+  ADC_0:
+    user_label: ADC_0
+    definition: Atmel:SAME70B_Drivers:0.0.1::ATSAME70Q21B-AN::AFEC0::driver_config_definition::ADC::HAL:Driver:ADC.Async
+    functionality: ADC
+    api: HAL:Driver:ADC_Async
+    configuration:
+      afec_advanced_settings: false
+      afec_channel0_enable: false
+      afec_channel10_enable: false
+      afec_channel11_enable: false
+      afec_channel1_enable: false
+      afec_channel2_enable: false
+      afec_channel3_enable: false
+      afec_channel4_enable: false
+      afec_channel5_enable: false
+      afec_channel6_enable: false
+      afec_channel7_enable: false
+      afec_channel8_enable: false
+      afec_channel9_enable: false
+      afec_channel_diff0: false
+      afec_channel_diff1: false
+      afec_channel_diff10: false
+      afec_channel_diff11: false
+      afec_channel_diff2: false
+      afec_channel_diff3: false
+      afec_channel_diff4: false
+      afec_channel_diff5: false
+      afec_channel_diff6: false
+      afec_channel_diff7: false
+      afec_channel_diff8: false
+      afec_channel_diff9: false
+      afec_channel_dual0: false
+      afec_channel_dual1: false
+      afec_channel_dual10: false
+      afec_channel_dual11: false
+      afec_channel_dual2: false
+      afec_channel_dual3: false
+      afec_channel_dual4: false
+      afec_channel_dual5: false
+      afec_channel_dual6: false
+      afec_channel_dual7: false
+      afec_channel_dual8: false
+      afec_channel_dual9: false
+      afec_channel_ecorr0: false
+      afec_channel_ecorr1: false
+      afec_channel_ecorr10: false
+      afec_channel_ecorr11: false
+      afec_channel_ecorr2: false
+      afec_channel_ecorr3: false
+      afec_channel_ecorr4: false
+      afec_channel_ecorr5: false
+      afec_channel_ecorr6: false
+      afec_channel_ecorr7: false
+      afec_channel_ecorr8: false
+      afec_channel_ecorr9: false
+      afec_channel_gain0: '1'
+      afec_channel_gain1: '1'
+      afec_channel_gain10: '1'
+      afec_channel_gain11: '1'
+      afec_channel_gain2: '1'
+      afec_channel_gain3: '1'
+      afec_channel_gain4: '1'
+      afec_channel_gain5: '1'
+      afec_channel_gain6: '1'
+      afec_channel_gain7: '1'
+      afec_channel_gain8: '1'
+      afec_channel_gain9: '1'
+      afec_channel_offset0: 512
+      afec_channel_offset1: 512
+      afec_channel_offset10: 512
+      afec_channel_offset11: 512
+      afec_channel_offset2: 512
+      afec_channel_offset3: 512
+      afec_channel_offset4: 512
+      afec_channel_offset5: 512
+      afec_channel_offset6: 512
+      afec_channel_offset7: 512
+      afec_channel_offset8: 512
+      afec_channel_offset9: 512
+      afec_cmpmode: The converted data is lower than the low threshold of the window.
+      afec_cmpsel: Channel 0
+      afec_compare_all_channels: false
+      afec_comparison_settings: false
+      afec_cosr_csel: false
+      afec_fast_wakeup_mode: false
+      afec_freerunning_mode: false
+      afec_gaincorr: 0
+      afec_highthres: 0
+      afec_ibctl: 1
+      afec_lowthres: 0
+      afec_offsetcorr: 0
+      afec_prescaler: 7
+      afec_resolution: 16-bit
+      afec_sign_mode: 'Single-Ended channels: Unsigned. Differential channels: Signed.'
+      afec_sleep_mode: false
+      afec_startup_time: 64 periods of AFE clock
+      afec_stm: true
+      afec_tag: true
+      afec_tracktim: 15
+      afec_transfer: 2
+      afec_trigger_enable: false
+      afec_trigger_selection: AFE0_ADTRG for AFEC0 / AFE1_ADTRG for AFEC1
+      afec_usch0: None
+      afec_usch1: None
+      afec_usch10: None
+      afec_usch11: None
+      afec_usch2: None
+      afec_usch3: None
+      afec_usch4: None
+      afec_usch5: None
+      afec_usch6: None
+      afec_usch7: None
+      afec_usch8: None
+      afec_usch9: None
+      afec_useq: false
+    optional_signals:
+    - identifier: ADC_0:AD/0
+      pad: PD30
+      mode: Enabled
+      configuration: null
+      definition: Atmel:SAME70B_Drivers:0.0.1::ATSAME70Q21B-AN::optional_signal_definition::AFEC0.AD.0
+      name: AFEC0/AD/0
+      label: AD/0
+    - identifier: ADC_0:AD/8
+      pad: PA19
+      mode: Enabled
+      configuration: null
+      definition: Atmel:SAME70B_Drivers:0.0.1::ATSAME70Q21B-AN::optional_signal_definition::AFEC0.AD.8
+      name: AFEC0/AD/8
+      label: AD/8
+    - identifier: ADC_0:AD/10
+      pad: PB0
+      mode: Enabled
+      configuration: null
+      definition: Atmel:SAME70B_Drivers:0.0.1::ATSAME70Q21B-AN::optional_signal_definition::AFEC0.AD.10
+      name: AFEC0/AD/10
+      label: AD/10
+    variant: null
+    clocks:
+      domain_group:
+        nodes:
+        - name: AFEC
+          input: Master Clock (MCK)
+          external: false
+          external_frequency: 0
+        configuration:
+          afec_clock_source: Master Clock (MCK)
+  ADC_1:
+    user_label: ADC_1
+    definition: Atmel:SAME70B_Drivers:0.0.1::ATSAME70Q21B-AN::AFEC1::driver_config_definition::ADC::HAL:Driver:ADC.Async
+    functionality: ADC
+    api: HAL:Driver:ADC_Async
+    configuration:
+      afec_advanced_settings: false
+      afec_channel0_enable: false
+      afec_channel10_enable: false
+      afec_channel11_enable: false
+      afec_channel1_enable: false
+      afec_channel2_enable: false
+      afec_channel3_enable: false
+      afec_channel4_enable: false
+      afec_channel5_enable: false
+      afec_channel6_enable: false
+      afec_channel7_enable: false
+      afec_channel8_enable: false
+      afec_channel9_enable: false
+      afec_channel_diff0: false
+      afec_channel_diff1: false
+      afec_channel_diff10: false
+      afec_channel_diff11: false
+      afec_channel_diff2: false
+      afec_channel_diff3: false
+      afec_channel_diff4: false
+      afec_channel_diff5: false
+      afec_channel_diff6: false
+      afec_channel_diff7: false
+      afec_channel_diff8: false
+      afec_channel_diff9: false
+      afec_channel_dual0: false
+      afec_channel_dual1: false
+      afec_channel_dual10: false
+      afec_channel_dual11: false
+      afec_channel_dual2: false
+      afec_channel_dual3: false
+      afec_channel_dual4: false
+      afec_channel_dual5: false
+      afec_channel_dual6: false
+      afec_channel_dual7: false
+      afec_channel_dual8: false
+      afec_channel_dual9: false
+      afec_channel_ecorr0: false
+      afec_channel_ecorr1: false
+      afec_channel_ecorr10: false
+      afec_channel_ecorr11: false
+      afec_channel_ecorr2: false
+      afec_channel_ecorr3: false
+      afec_channel_ecorr4: false
+      afec_channel_ecorr5: false
+      afec_channel_ecorr6: false
+      afec_channel_ecorr7: false
+      afec_channel_ecorr8: false
+      afec_channel_ecorr9: false
+      afec_channel_gain0: '1'
+      afec_channel_gain1: '1'
+      afec_channel_gain10: '1'
+      afec_channel_gain11: '1'
+      afec_channel_gain2: '1'
+      afec_channel_gain3: '1'
+      afec_channel_gain4: '1'
+      afec_channel_gain5: '1'
+      afec_channel_gain6: '1'
+      afec_channel_gain7: '1'
+      afec_channel_gain8: '1'
+      afec_channel_gain9: '1'
+      afec_channel_offset0: 512
+      afec_channel_offset1: 512
+      afec_channel_offset10: 512
+      afec_channel_offset11: 512
+      afec_channel_offset2: 512
+      afec_channel_offset3: 512
+      afec_channel_offset4: 512
+      afec_channel_offset5: 512
+      afec_channel_offset6: 512
+      afec_channel_offset7: 512
+      afec_channel_offset8: 512
+      afec_channel_offset9: 512
+      afec_cmpmode: The converted data is lower than the low threshold of the window.
+      afec_cmpsel: Channel 0
+      afec_compare_all_channels: false
+      afec_comparison_settings: false
+      afec_cosr_csel: false
+      afec_fast_wakeup_mode: false
+      afec_freerunning_mode: false
+      afec_gaincorr: 0
+      afec_highthres: 0
+      afec_ibctl: 1
+      afec_lowthres: 0
+      afec_offsetcorr: 0
+      afec_prescaler: 7
+      afec_resolution: 16-bit
+      afec_sign_mode: 'Single-Ended channels: Unsigned. Differential channels: Signed.'
+      afec_sleep_mode: false
+      afec_startup_time: 64 periods of AFE clock
+      afec_stm: true
+      afec_tag: true
+      afec_tracktim: 15
+      afec_transfer: 2
+      afec_trigger_enable: false
+      afec_trigger_selection: AFE0_ADTRG for AFEC0 / AFE1_ADTRG for AFEC1
+      afec_usch0: None
+      afec_usch1: None
+      afec_usch10: None
+      afec_usch11: None
+      afec_usch2: None
+      afec_usch3: None
+      afec_usch4: None
+      afec_usch5: None
+      afec_usch6: None
+      afec_usch7: None
+      afec_usch8: None
+      afec_usch9: None
+      afec_useq: false
+    optional_signals:
+    - identifier: ADC_1:AD/0
+      pad: PB1
+      mode: Enabled
+      configuration: null
+      definition: Atmel:SAME70B_Drivers:0.0.1::ATSAME70Q21B-AN::optional_signal_definition::AFEC1.AD.0
+      name: AFEC1/AD/0
+      label: AD/0
+    - identifier: ADC_1:AD/1
+      pad: PC13
+      mode: Enabled
+      configuration: null
+      definition: Atmel:SAME70B_Drivers:0.0.1::ATSAME70Q21B-AN::optional_signal_definition::AFEC1.AD.1
+      name: AFEC1/AD/1
+      label: AD/1
+    - identifier: ADC_1:AD/3
+      pad: PC12
+      mode: Enabled
+      configuration: null
+      definition: Atmel:SAME70B_Drivers:0.0.1::ATSAME70Q21B-AN::optional_signal_definition::AFEC1.AD.3
+      name: AFEC1/AD/3
+      label: AD/3
+    - identifier: ADC_1:AD/5
+      pad: PC30
+      mode: Enabled
+      configuration: null
+      definition: Atmel:SAME70B_Drivers:0.0.1::ATSAME70Q21B-AN::optional_signal_definition::AFEC1.AD.5
+      name: AFEC1/AD/5
+      label: AD/5
+    - identifier: ADC_1:AD/6
+      pad: PC31
+      mode: Enabled
+      configuration: null
+      definition: Atmel:SAME70B_Drivers:0.0.1::ATSAME70Q21B-AN::optional_signal_definition::AFEC1.AD.6
+      name: AFEC1/AD/6
+      label: AD/6
+    variant: null
+    clocks:
+      domain_group:
+        nodes:
+        - name: AFEC
+          input: Master Clock (MCK)
+          external: false
+          external_frequency: 0
+        configuration:
+          afec_clock_source: Master Clock (MCK)
   FLASH:
     user_label: FLASH
     definition: Atmel:SAME70B_Drivers:0.0.1::ATSAME70Q21B-AN::EFC::driver_config_definition::Flash::HAL:Driver:FLASH
@@ -804,6 +1117,48 @@ drivers:
         configuration:
           mcan_clock_source: Programmable Clock Controller 5 (PMC_PCK5)
 pads:
+  PC31:
+    name: PC31
+    definition: Atmel:SAME70B_Drivers:0.0.1::ATSAME70Q21B-AN::pad::PC31
+    mode: Analog
+    user_label: PC31
+    configuration: null
+  PC30:
+    name: PC30
+    definition: Atmel:SAME70B_Drivers:0.0.1::ATSAME70Q21B-AN::pad::PC30
+    mode: Analog
+    user_label: PC30
+    configuration: null
+  PC12:
+    name: PC12
+    definition: Atmel:SAME70B_Drivers:0.0.1::ATSAME70Q21B-AN::pad::PC12
+    mode: Analog
+    user_label: PC12
+    configuration: null
+  PC13:
+    name: PC13
+    definition: Atmel:SAME70B_Drivers:0.0.1::ATSAME70Q21B-AN::pad::PC13
+    mode: Analog
+    user_label: PC13
+    configuration: null
+  PB1:
+    name: PB1
+    definition: Atmel:SAME70B_Drivers:0.0.1::ATSAME70Q21B-AN::pad::PB1
+    mode: Analog
+    user_label: PB1
+    configuration: null
+  PB0:
+    name: PB0
+    definition: Atmel:SAME70B_Drivers:0.0.1::ATSAME70Q21B-AN::pad::PB0
+    mode: Analog
+    user_label: PB0
+    configuration: null
+  PA19:
+    name: PA19
+    definition: Atmel:SAME70B_Drivers:0.0.1::ATSAME70Q21B-AN::pad::PA19
+    mode: Analog
+    user_label: PA19
+    configuration: null
   PB2:
     name: PB2
     definition: Atmel:SAME70B_Drivers:0.0.1::ATSAME70Q21B-AN::pad::PB2
@@ -821,6 +1176,12 @@ pads:
     definition: Atmel:SAME70B_Drivers:0.0.1::ATSAME70Q21B-AN::pad::PA21
     mode: Peripheral IO
     user_label: PA21
+    configuration: null
+  PD30:
+    name: PD30
+    definition: Atmel:SAME70B_Drivers:0.0.1::ATSAME70Q21B-AN::pad::PD30
+    mode: Analog
+    user_label: PD30
     configuration: null
   PD25:
     name: PD25

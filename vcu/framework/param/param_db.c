@@ -3,7 +3,7 @@
 #include <stdint.h>
 
 #include "param_db.h"
-#include "framework/sensor/param_db_calib.c"
+#include "framework/sensor/param_db_calib.c.h"
 
 struct param_info_t param_info[] = {
 	{"calib_start", 2048},

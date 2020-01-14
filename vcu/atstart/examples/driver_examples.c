@@ -10,6 +10,24 @@
 #include "driver_init.h"
 #include "utils.h"
 
+/**
+ * Example of using ADC_0 to generate waveform.
+ */
+void ADC_0_example(void)
+{
+
+	adc_async_start_conversion(&ADC_0);
+}
+
+/**
+ * Example of using ADC_1 to generate waveform.
+ */
+void ADC_1_example(void)
+{
+
+	adc_async_start_conversion(&ADC_1);
+}
+
 static uint8_t src_data[IFLASH_PAGE_SIZE];
 static uint8_t chk_data[IFLASH_PAGE_SIZE];
 

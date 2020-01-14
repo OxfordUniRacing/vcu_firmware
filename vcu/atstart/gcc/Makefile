@@ -32,8 +32,8 @@ SUB_DIRS +=  \
  \
 usb/class/cdc/device \
 hpl/uart \
-usb/class/msc/device \
 hpl/pmc \
+hpl/afec \
 hpl/usart \
 sd_mmc \
 hal/src \
@@ -45,15 +45,17 @@ hpl/efc \
 hal/utils/src \
 same70b/gcc/gcc \
 examples \
+usb/device \
 usb \
 same70b/gcc \
 hpl/core \
-usb/device
+usb/class/msc/device
 
 # List the object files
 OBJS +=  \
 hal/src/hal_io.o \
 hal/src/hal_can_async.o \
+hpl/mcan/hpl_mcan.o \
 atmel_start.o \
 sd_mmc_start.o \
 hpl/usart/hpl_usart.o \
@@ -70,7 +72,8 @@ hal/utils/src/utils_list.o \
 hal/src/hal_usart_os.o \
 hal/utils/src/utils_assert.o \
 usb_start.o \
-hpl/mcan/hpl_mcan.o \
+hal/src/hal_adc_async.o \
+hpl/afec/hpl_afec.o \
 usb/usb_protocol.o \
 hpl/pmc/hpl_pmc.o \
 hal/src/hal_mci_os.o \
@@ -97,6 +100,7 @@ hpl/xdmac/hpl_xdmac.o
 OBJS_AS_ARGS +=  \
 "hal/src/hal_io.o" \
 "hal/src/hal_can_async.o" \
+"hpl/mcan/hpl_mcan.o" \
 "atmel_start.o" \
 "sd_mmc_start.o" \
 "hpl/usart/hpl_usart.o" \
@@ -113,7 +117,8 @@ OBJS_AS_ARGS +=  \
 "hal/src/hal_usart_os.o" \
 "hal/utils/src/utils_assert.o" \
 "usb_start.o" \
-"hpl/mcan/hpl_mcan.o" \
+"hal/src/hal_adc_async.o" \
+"hpl/afec/hpl_afec.o" \
 "usb/usb_protocol.o" \
 "hpl/pmc/hpl_pmc.o" \
 "hal/src/hal_mci_os.o" \
@@ -144,6 +149,7 @@ DIR_INCLUDES +=  \
 -I"../examples" \
 -I"../hal/include" \
 -I"../hal/utils/include" \
+-I"../hpl/afec" \
 -I"../hpl/core" \
 -I"../hpl/hsmci" \
 -I"../hpl/mcan" \
@@ -189,16 +195,18 @@ DEPS_AS_ARGS +=  \
 "usb/class/msc/device/mscdf.d" \
 "hal/src/hal_usart_os.d" \
 "hal/utils/src/utils_list.d" \
+"hal/src/hal_adc_async.d" \
 "usb_start.d" \
 "hal/utils/src/utils_assert.d" \
 "hpl/usbhs/hpl_usbhs.d" \
 "hal/src/hal_delay.d" \
-"hpl/core/hpl_init.d" \
+"hpl/mcan/hpl_mcan.d" \
 "hal/src/hal_flash.d" \
 "hal/src/hal_mci_os.d" \
 "hal/src/hal_usb_device.d" \
+"hpl/core/hpl_init.d" \
 "hal/src/hal_init.d" \
-"hpl/mcan/hpl_mcan.d" \
+"hpl/afec/hpl_afec.d" \
 "hpl/pmc/hpl_pmc.d" \
 "driver_init.d" \
 "hal/src/hal_usart_async.d" \

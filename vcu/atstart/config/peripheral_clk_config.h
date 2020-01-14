@@ -4,6 +4,42 @@
 
 // <<< Use Configuration Wizard in Context Menu >>>
 
+// <h> AFEC Clock Settings
+// <y> AFEC Clock source
+// <CONF_SRC_MCK"> Master Clock (MCK)
+// <i> This defines the clock source for the AFEC
+// <id> afec_clock_source
+#ifndef CONF_AFEC0_SRC
+#define CONF_AFEC0_SRC CONF_SRC_MCK
+#endif
+// </h>
+
+/**
+ * \def AFEC FREQUENCY
+ * \brief AFEC's Clock frequency
+ */
+#ifndef CONF_AFEC0_FREQUENCY
+#define CONF_AFEC0_FREQUENCY 150000000
+#endif
+
+// <h> AFEC Clock Settings
+// <y> AFEC Clock source
+// <CONF_SRC_MCK"> Master Clock (MCK)
+// <i> This defines the clock source for the AFEC
+// <id> afec_clock_source
+#ifndef CONF_AFEC1_SRC
+#define CONF_AFEC1_SRC CONF_SRC_MCK
+#endif
+// </h>
+
+/**
+ * \def AFEC FREQUENCY
+ * \brief AFEC's Clock frequency
+ */
+#ifndef CONF_AFEC1_FREQUENCY
+#define CONF_AFEC1_FREQUENCY 150000000
+#endif
+
 // <h> HSMCI Clock Settings
 // <y> HSMCI Clock source
 // <CONF_SRC_MCK"> Master Clock (MCK)

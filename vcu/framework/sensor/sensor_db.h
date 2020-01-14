@@ -5,7 +5,7 @@
 
 #include "utils_assert.h"
 
-#define SENSOR_MAX_NUM 17
+#define SENSOR_MAX_NUM 28
 
 #define SENS_MC_PWM_1 0
 #define SENS_MC_PWM_2 1
@@ -24,6 +24,15 @@
 #define SENS_THROTTLE_POS_1 14
 #define SENS_THROTTLE_POS_2 15
 #define SENS_STEERING_POS 16
+#define SENS_VCU_MCU_TEMP 17
+#define SENS_TEMP_R_IN 20
+#define SENS_TEMP_R_OUT 21
+#define SENS_TEMP_L_IN 22
+#define SENS_TEMP_L_OUT 23
+#define SENS_PRES_R_IN 24
+#define SENS_PRES_R_OUT 25
+#define SENS_PRES_L_IN 26
+#define SENS_PRES_L_OUT 27
 
 #define SENS_MC_PWM(i) (ASSERT(i>0&&i<=2), -1+i)
 #define SENS_MC_VOLT(i) (ASSERT(i>0&&i<=2), 1+i)

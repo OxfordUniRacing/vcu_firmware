@@ -21,6 +21,9 @@ extern "C" {
 #include <hal_io.h>
 #include <hal_sleep.h>
 
+#include <hal_adc_async.h>
+#include <hal_adc_async.h>
+
 #include <hal_flash.h>
 
 #include <hal_mci_os.h>
@@ -37,6 +40,14 @@ extern "C" {
 #include <hal_can_async.h>
 
 #define USART_EDBG_BUFFER_SIZE 16
+
+extern struct adc_async_descriptor ADC_0;
+
+/* The enabled channel for ADC */
+
+extern struct adc_async_descriptor ADC_1;
+
+/* The enabled channel for ADC */
 
 extern struct flash_descriptor FLASH;
 

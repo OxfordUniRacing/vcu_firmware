@@ -9,6 +9,7 @@
 13,"brake_pos",1,"float","sensor_trans_linear",,
 14,"throttle_pos",2,"float","sensor_trans_linear",,
 16,"steering_pos",1,"float","sensor_trans_linear",,
+17,"vcu_mcu_temp",1,"float","sensor_trans_linear","builtin","AFE0_AD11"
 20,"temp_r_in",1,"float","sensor_trans_linear","PC31","AFE1_AD6"
 21,"temp_r_out",1,"float","sensor_trans_linear","PC13","AFE1_AD1"
 22,"temp_l_in",1,"float","sensor_trans_linear","PC12","AFE1_AD3"
