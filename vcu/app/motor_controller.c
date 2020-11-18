@@ -20,6 +20,8 @@
 #include "driver/log_msg.h"
 #include "motor_controller.h"
 
+#include <stdlib.h>
+
 // TODO verify newline char and line len with motor controller hardware
 #define MC_NEWLINE '\n'
 // status line length including newline
@@ -27,6 +29,7 @@
 
 #define MC_COUNT 2
 #define MC_BUF_SIZE 256
+
 
 struct usart_async_descriptor *const uart_hal_descs[] =
 	{ &UART_MC_1, &UART_MC_2 };
@@ -68,6 +71,19 @@ struct mc_inst_t {
 	uint8_t buffer[MC_BUF_SIZE];
 };
 
+struct mc_data_t
+{
+	float throttle_input;
+	float aux_input;
+	int pwm; 
+	float input_voltage;
+	float phase_current;
+	int rpm;
+	int power_stage_temp;
+	int motor_temp;
+};
+
+
 static void mc_uart_tx_byte_sent(struct _usart_async_device *device);
 static void mc_uart_tx_done_cb(struct _usart_async_device *device);
 static void mc_uart_rx_done_cb(struct _usart_async_device *device, uint8_t data);
@@ -97,6 +113,46 @@ void mc_passthru_disable(struct mc_inst_t *mc) {
 }
 
 static void mc_parse_stat(struct mc_inst_t *mc, uint8_t *s) {
+	
+	struct mc_data_t recv_data;
+	char* curr = (char*) s;
+	int8_t slen = strlen(curr);
+
+	if (!(curr[0] == 'T' || curr[0] == 'S') || slen < 36) return;
+	// T=0.008V,a=0.008V,PWM=   0,U= 35.2V,I=  0.0A,RPM=     0,con= 21C,mot= 20C
+#define ERROR_CHECK if ((uintptr_t)curr > (uintptr_t)s+slen) goto error;
+	recv_data.throttle_input = strtof(curr+2, &curr);
+	ERROR_CHECK
+	recv_data.aux_input = strtof(curr+4, &curr);
+	ERROR_CHECK
+	recv_data.pwm = strtol(curr+6, &curr, 10);
+	ERROR_CHECK
+	recv_data.input_voltage = strtof(curr+3, &curr);
+	ERROR_CHECK
+	recv_data.phase_current = strtof(curr+4, &curr);
+	ERROR_CHECK
+	recv_data.rpm = strtol(curr+6, &curr, 10);
+	ERROR_CHECK
+	recv_data.power_stage_temp = strtol(curr+5, &curr, 10);
+	ERROR_CHECK
+	recv_data.motor_temp = strtol(curr+6, &curr, 10);
+	ERROR_CHECK
+#undef ERROR_CHECK
+	
+	log_info("motor data: %s", s);
+	log_info("recv_data.throttle_input = %f", recv_data.throttle_input);
+	log_info("recv_data.aux_input = %f", recv_data.aux_input);
+	log_info("recv_data.pwm = %d", recv_data.pwm);
+	log_info("recv_data.input_voltage = %f", recv_data.input_voltage);
+	log_info("recv_data.phase_current = %f", recv_data.phase_current);
+	log_info("recv_data.rpm = %d", recv_data.rpm);
+	log_info("recv_data.power_stage_temp = %d", recv_data.power_stage_temp);
+	log_info("recv_data.motor_temp = %d", recv_data.motor_temp);
+	return;
+
+	error:
+	log_warn("mc_parser: read beyond the end of the string!!!");
+	return;
 }
 
 static void mc_internal_set_throttle(struct mc_inst_t *mc, int throttle) {
