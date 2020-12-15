@@ -156,6 +156,21 @@ static void mc_parse_stat(struct mc_inst_t *mc, uint8_t *s) {
 }
 
 static void mc_internal_set_throttle(struct mc_inst_t *mc, int throttle) {
+	uint8_t cmd[12];
+	uint8_t size = 0;
+
+	if (throttle > 100 || throttle < 0) {
+		log_warn("mc_internal_set_throttle: invalid throttle value %d", throttle);
+		return;
+	}
+	cmd[size] = '0'+(throttle % 10); size++;
+	for (int i = 0; i < throttle % 10; i++) {
+		cmd[size] = '+'; size++;
+	}
+	cmd[size] = '\n'; size++;
+	cmd[size] = '\0'; size++;
+	
+	mc_uart_write(mc, &cmd, size);
 }
 
 static bool mc_poll_cmd_queue(struct mc_inst_t *mc) {
