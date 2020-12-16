@@ -1,222 +1,167 @@
 #include "atmel_start.h"
 
+#include <stdarg.h>
+#include <stdio.h>
+
 #include "FreeRTOS.h"
 #include "task.h"
-#include "queue.h"
+#include "stream_buffer.h"
 
 #include "driver/log_msg.h"
-#include "uart_term.h"
+#include "utils.h"
 
-#include <stdlib.h>
+#include "config.h"
 
-// TODO verify newline char and line len with motor controller hardware
-#define TERM_NEWLINE '\n'
-// status line length including newline
-#define MC_STATUS_LEN 77
+#include <string.h>
 
-#define TERM_COUNT 1
-#define MC_BUF_SIZE 256
+#include "driver/usb/usb_console.h"
+#include "driver/eeprom_emu.h"
+#include "framework/param/param.h"
+#include "app/motor_controller.h"
 
+#define RET_CHECK(x) if (x < 0) return x;
 
-struct usart_async_descriptor *const term_uart_hal_descs[] =
-	{ &UART_TERM };
-
-struct term_cmd_t {
-	enum {
-		TERM_WAKE,
-	} op;
-	int d;
-};
-
-struct term_inst_t {
-
-  QueueHandle_t cmd_q;
-	TaskHandle_t task;
-
-	// uart
-
-	SemaphoreHandle_t uart_sem;
-
-	struct _usart_async_device *uart;
-
-	volatile uint8_t *tx_ptr;
-	volatile int tx_cnt;
-	SemaphoreHandle_t tx_sem;
-
-	volatile int rx_rdy;
-	struct ringbuffer rb;
-	uint8_t buffer[MC_BUF_SIZE];
-};
+#define TERM_MAX_LEN 256
 
 
-static void term_uart_tx_byte_sent(struct _usart_async_device *device);
-static void term_uart_tx_done_cb(struct _usart_async_device *device);
-static void term_uart_rx_done_cb(struct _usart_async_device *device, uint8_t data);
-static void term_uart_error(struct _usart_async_device *device);
-
-
-static struct term_inst_t term_inst[TERM_COUNT];
-
-
-static bool term_poll_cmd_queue(struct term_inst_t *term) {
-	struct term_cmd_t cmd;
-	xQueueReceive(term->cmd_q, &cmd, portMAX_DELAY);
-
-	switch (cmd.op) {
-	case TERM_WAKE:
-		break;
-
-	default:
-		log_error("term: bad command %d", cmd.op);
-	}
-
+static int cmd_ping(char** stok) {
+	int r;
+	r = 0;
+  log_debug("pong\n");
+	return r;
 }
 
-static void term_parse_cmd(struct term_inst_t *term, uint8_t *s) {
-	
-	
-	
-	log_info("terminal data: %s", s);
-	
-	return;
-
-	
+static int cmd_echo(char** stok) {
+	int r;
+	char *s = strtok_r(NULL, "", stok);
+	r = 0;
+  log_debug("%s\n", s);
+	return r;
 }
 
-static void term_task(void *p) {
-	static uint8_t buf[MC_STATUS_LEN+1];
-	struct term_inst_t *term = p;
+#define CMD_MC_HELP "mc <num> <command>"
+static int cmd_mc(char** stok) {
+	int r;
+	struct mc_inst_t *mc = mc_get_inst(1);
 
-	// Initialization
+	//char *inst = strtok_r(NULL, " ", stok);
+	//if (!inst) return 0;
 
-	term->cmd_q = xQueueCreate(4, sizeof(struct term_cmd_t));
+	char *subcmd = strtok_r(NULL, " ", stok);
+	if (!subcmd) return 0;
+	else if (!strcmp(subcmd, "passthru")) {
+		static uint8_t buf[64];
 
-
-	term->tx_cnt = 0;
-	term->tx_sem = xSemaphoreCreateBinary();
-
-	ringbuffer_init(&term->rb, term->buffer, sizeof(term->buffer));
-	term->rx_rdy = 0;
-
-	term->uart->usart_cb.tx_byte_sent = term_uart_tx_byte_sent;
-	term->uart->usart_cb.tx_done_cb = term_uart_tx_done_cb;
-	term->uart->usart_cb.rx_done_cb = term_uart_rx_done_cb;
-	term->uart->usart_cb.error_cb = term_uart_error;
-
-	_uart_usart_async_enable_byte_sent_irq(term->uart);
-	_uart_usart_async_set_irq_state(term->uart, USART_ASYNC_RX_DONE, true);
-	_uart_usart_async_set_irq_state(term->uart, USART_ASYNC_ERROR, true);
-
-	_uart_usart_async_enable(term->uart);
-
-	 // Main loop
-
-	while (1) {
-    term_poll_cmd_queue(term);
-
-		if (term->rx_rdy) {
-			int l = term_uart_read(term, buf, sizeof(buf)-1);
-			buf[l+1] = '\0';
-			term_parse_cmd(term, buf);
+		mc_passthru_enable(mc);
+		while (1) {
+			if ((r = mc_uart_read(mc, buf, sizeof(buf)))) {
+				cwrite(buf, r);
+			} else if ((r = cgetc_async())) {
+				RET_CHECK(r);
+				if (r == 0x1b) { // esc
+					cwrite("\n", 1);
+					break;
+				} else {
+					cwrite(&r, 1);
+					mc_uart_write(mc, (uint8_t *)&r, 1);
+				}
+			} else {
+				vTaskDelay(1);
+			}
 		}
+		mc_passthru_disable(mc);
 	}
+
+	return 0;
 }
 
-void term_init(void) {
-	for (int i = 0; i < TERM_COUNT; i++) {
-		struct term_inst_t *term = &term_inst[i];
-		term->uart = &term_uart_hal_descs[i]->device;
-		xTaskCreate(term_task, "term", 1024, term, 3, &term->task);
+static int cmd_param(char** stok) {
+	int r;
+
+	char *subcmd = strtok_r(NULL, " ", stok);
+	if (!subcmd) return 0;
+
+	if (!strcmp(subcmd, "commit")) {
+		eeprom_emu_commit();
+		return 0;
 	}
+
+	char *name = strtok_r(NULL, " ", stok);
+	if (!name) return 0;
+
+	int addr = param_find_by_name(name);
+	if (addr < 0) {
+		r = 0;
+    log_debug("Unknown param: %s\n", name);
+		return r;
+	}
+
+	if (!strcmp(subcmd, "getf")) {
+		float x = param_read_float(addr);
+		r = 0;
+    log_debug("%s = %f\n", name, x);
+		return r;
+	} else if (!strcmp(subcmd, "setf")) {
+		char *val = strtok_r(NULL, " ", stok);
+		if (!val) return 0;
+    log_debug("error\n");
+		float x;
+		r = sscanf(val, "%f", &x);
+		if (r < 1) return 0;
+    log_debug("error\n");
+		param_write_float(addr, x);
+		r = 0;
+    log_debug("%s = %f\n", name, x);
+		return r;
+	}
+
+	return 0;
+}
+
+int terminal_run(char* line_buf) {
+  char *stok;
+  int r;
+
+  char *cmd = strtok_r(line_buf, " ", &stok);
+
+  if (!cmd) {
+  } else if (!strcmp(cmd, "ping")) {
+    r = cmd_ping(&stok);
+    RET_CHECK(r);
+  } else if (!strcmp(cmd, "echo")) {
+    r = cmd_echo(&stok);
+    RET_CHECK(r);
+  } else if (!strcmp(cmd, "mc")) {
+    r = cmd_mc(&stok);
+    RET_CHECK(r);
+  } else if (!strcmp(cmd, "param")) {
+    r = cmd_param(&stok);
+    RET_CHECK(r);
+  } else {
+    r = 0;
+    log_debug("unrecognized command: %s\n", cmd);
+    RET_CHECK(r);
+  }
 }
 
 
-// Read a line from uart
-int term_uart_read(struct term_inst_t *term, uint8_t *dst, int size) {
-	if (!term->rx_rdy) return 0;
+void uart_term_task(void *unused) {
+	(void) unused;
 
-	int count = 0;
-	while (count != size) {
-		int r;
-		uint8_t d;
+	static char term_buf[TERM_MAX_LEN];
+	struct io_descriptor *io;
+	usart_os_get_io(&UART_TERM, &io);
 
-		taskENTER_CRITICAL();
-		r = ringbuffer_get(&term->rb, &d);
-		taskEXIT_CRITICAL();
 
-		ASSERT(r == ERR_NONE);
-		dst[count++] = d;
-		if (d == TERM_NEWLINE) break;
+	
+	while (1)
+	{
+		char* curr = term_buf;
+		while (curr - term_buf < TERM_MAX_LEN-1 && *(curr-1) != '\n') {
+			io_read(io, curr++, 1);
+		}
+		*(curr-1) = '\0';
+		int r = terminal_run(term_buf);
+		if (r != 0) log_error("terminal command %s resulted in error code %d", term_buf, r);
 	}
-
-	taskENTER_CRITICAL();
-	term->rx_rdy--;
-	taskEXIT_CRITICAL();
-
-	return count;
-}
-
-// Write to uart
-void term_uart_write(struct term_inst_t *term, uint8_t *src, int count) {
-	xSemaphoreTake(term->tx_sem, portMAX_DELAY);
-
-	term->tx_ptr = src;
-	term->tx_cnt = count;
-	_uart_usart_async_enable_byte_sent_irq(term->uart);
-}
-
-static void term_uart_tx_byte_sent(struct _usart_async_device *device) {
-	BaseType_t xHigherPriorityTaskWoken = pdFALSE;
-
-	struct term_inst_t *term = NULL;
-	for (int i = 0; i < TERM_COUNT; i++) {
-		if (term_inst[i].uart == device) term = &term_inst[i];
-	}
-	ASSERT(term != NULL);
-
-	if (term->tx_cnt) {
-		_uart_usart_async_write_byte(device, *term->tx_ptr);
-		_uart_usart_async_enable_byte_sent_irq(device);
-		term->tx_ptr++;
-		term->tx_cnt--;
-	} else {
-		xSemaphoreGiveFromISR(term->tx_sem, &xHigherPriorityTaskWoken);
-		portYIELD_FROM_ISR(xHigherPriorityTaskWoken);
-	}
-}
-
-static void term_uart_tx_done_cb(struct _usart_async_device *device) {
-	// this callback should not be called
-	(void)device;
-	ASSERT(false);
-}
-
-static void term_uart_rx_done_cb(struct _usart_async_device *device, uint8_t data) {
-	BaseType_t xHigherPriorityTaskWoken = pdFALSE;
-
-	struct term_inst_t *term = NULL;
-	for (int i = 0; i < TERM_COUNT; i++) {
-		if (term_inst[i].uart == device) term = &term_inst[i];
-	}
-	ASSERT(term != NULL);
-
-	/*
-	if (term->rb.write_index - term->rb.read_index == term->rb.size) {
-		log_error("term: uart ringbuffer overrun");
-	}
-	*/
-
-	ringbuffer_put(&term->rb, data);
-
-	if (data == TERM_NEWLINE) {
-		term->rx_rdy++; // no atomic necessary because irq is higher priority
-		struct term_cmd_t cmd = { TERM_WAKE };
-		xQueueSendToBackFromISR(term->cmd_q, &cmd, &xHigherPriorityTaskWoken);
-		portYIELD_FROM_ISR(xHigherPriorityTaskWoken);
-	}
-}
-
-static void term_uart_error(struct _usart_async_device *device) {
-	(void)device;
-	log_error("term: uart error");
 }

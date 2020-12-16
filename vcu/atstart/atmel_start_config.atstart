@@ -752,9 +752,9 @@ drivers:
           uart_clock_source: Master Clock (MCK)
   UART_TERM:
     user_label: UART_TERM
-    definition: Atmel:SAME70B_Drivers:0.0.1::ATSAME70Q21B-AN::UART3::driver_config_definition::UART::HAL:Driver:USART.Async
+    definition: Atmel:SAME70B_Drivers:0.0.1::ATSAME70Q21B-AN::UART3::driver_config_definition::UART::HAL:Driver:USART.RTOS.Beta
     functionality: USART
-    api: HAL:Driver:USART_Async
+    api: HAL:Driver:USART_RTOS_Beta
     configuration:
       uart_advanced: false
       uart_baud_rate: 115200

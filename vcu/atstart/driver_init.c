@@ -39,8 +39,6 @@
 #define UART_MC_1_BUFFER_SIZE 16
 /*! The buffer size for USART */
 #define UART_MC_2_BUFFER_SIZE 16
-/*! The buffer size for USART */
-#define UART_TERM_BUFFER_SIZE 16
 
 struct adc_async_descriptor ADC_0;
 #if ADC_0_CH_AMOUNT < 1
@@ -60,7 +58,6 @@ struct adc_async_channel_descriptor ADC_1_ch[ADC_1_CH_AMOUNT];
 #endif
 struct usart_async_descriptor UART_MC_1;
 struct usart_async_descriptor UART_MC_2;
-struct usart_async_descriptor UART_TERM;
 struct can_async_descriptor   CAN_0;
 
 #ifdef ADC_0_CH_MAX
@@ -73,11 +70,13 @@ static uint8_t ADC_1_map[ADC_1_CH_MAX + 1];
 
 static uint8_t UART_MC_1_buffer[UART_MC_1_BUFFER_SIZE];
 static uint8_t UART_MC_2_buffer[UART_MC_2_BUFFER_SIZE];
-static uint8_t UART_TERM_buffer[UART_TERM_BUFFER_SIZE];
 
 struct flash_descriptor FLASH;
 
 struct mci_os_desc IO_BUS;
+
+struct usart_os_descriptor UART_TERM;
+uint8_t                    UART_TERM_buffer[UART_TERM_BUFFER_SIZE];
 
 struct usart_os_descriptor USART_EDBG;
 uint8_t                    USART_EDBG_buffer[USART_EDBG_BUFFER_SIZE];
@@ -431,22 +430,7 @@ void UART_MC_2_init(void)
 	UART_MC_2_PORT_init();
 }
 
-/**
- * \brief USART Clock initialization function
- *
- * Enables register interface and peripheral clock
- */
-void UART_TERM_CLOCK_init()
-{
-	_pmc_enable_periph_clock(ID_UART3);
-}
-
-/**
- * \brief USART pinmux initialization function
- *
- * Set each required pin to USART functionality
- */
-void UART_TERM_PORT_init()
+void UART_TERM_PORT_init(void)
 {
 
 	gpio_set_pin_function(PD28, MUX_PD28A_UART3_URXD3);
@@ -454,16 +438,18 @@ void UART_TERM_PORT_init()
 	gpio_set_pin_function(PD31, MUX_PD31B_UART3_UTXD3);
 }
 
-/**
- * \brief USART initialization function
- *
- * Enables USART peripheral, clocks and initializes USART driver
- */
+void UART_TERM_CLOCK_init(void)
+{
+	_pmc_enable_periph_clock(ID_UART3);
+}
+
 void UART_TERM_init(void)
 {
 	UART_TERM_CLOCK_init();
-	usart_async_init(&UART_TERM, UART3, UART_TERM_buffer, UART_TERM_BUFFER_SIZE, _uart_get_usart_async());
+	usart_os_init(&UART_TERM, UART3, UART_TERM_buffer, UART_TERM_BUFFER_SIZE, (void *)_uart_get_usart_async());
+	usart_os_enable(&UART_TERM);
 	UART_TERM_PORT_init();
+	NVIC_SetPriority(UART3_IRQn, PERIPHERAL_INTERRUPT_PRIORITY);
 }
 
 void USART_EDBG_PORT_init(void)
@@ -574,6 +560,7 @@ void system_init(void)
 
 	UART_MC_1_init();
 	UART_MC_2_init();
+
 	UART_TERM_init();
 
 	USART_EDBG_init();

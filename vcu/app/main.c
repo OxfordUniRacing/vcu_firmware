@@ -52,12 +52,13 @@ int main(void) {
 	eeprom_emu_init();
 
 	mc_init();
-	term_init();
 	analog_poll_init();
 
 	usb_drive_init();
 	usb_console_init();
 	usb_start();
+
+	xTaskCreate(uart_term_task, "uart-term", 1024, NULL, 1, NULL);
 
 	xTaskCreate(test_task, "test", 1024, NULL, 1, NULL);
 

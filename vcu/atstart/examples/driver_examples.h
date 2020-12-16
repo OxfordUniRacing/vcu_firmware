@@ -26,7 +26,7 @@ void UART_MC_1_example(void);
 
 void UART_MC_2_example(void);
 
-void UART_TERM_example(void);
+void task_uart_term_create();
 
 void task_usart_edbg_create();
 
