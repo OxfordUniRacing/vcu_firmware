@@ -2,16 +2,16 @@ format_version: '2'
 name: My Project
 versions:
   api: '1.0'
-  backend: 1.7.279
-  commit: 1e07622763d149970fd8808a8f12ff3b1e84e0d7
+  backend: 1.8.491
+  commit: 605bd5a7663644fb84783aa2b00942b79b0d8955
   content: unknown
   content_pack_name: unknown
   format: '2'
-  frontend: 1.7.279
-  packs_version_avr8: 1.0.1401
+  frontend: 1.8.491
+  packs_version_avr8: 1.0.1446
   packs_version_qtouch: unknown
-  packs_version_sam: 1.0.1373
-  version_backend: 1.7.279
+  packs_version_sam: 1.0.1726
+  version_backend: 1.8.491
   version_frontend: ''
 board:
   identifier: SAME70Xplained
@@ -539,6 +539,32 @@ drivers:
     functionality: System
     api: HAL:HPL:PMC
     configuration:
+      $input: 12000000
+      $input_id: Main Clock (MAINCK)
+      RESERVED_InputFreq: 12000000
+      RESERVED_InputFreq_id: Main Clock (MAINCK)
+      _$freq_output_32kHz External Crystal Oscillator (XOSC32K): 0
+      _$freq_output_32kHz High Accuracy Internal Oscillator (OSC32K): 32000
+      _$freq_output_Embedded 4/8/12MHz RC Oscillator (OSC12M): '12000000'
+      _$freq_output_External 3-20MHz Oscillator (XOSC20M): 12000000
+      _$freq_output_External Clock: 1
+      _$freq_output_Generic Clock 0 (GCLK0) for I2SC0: 75000000
+      _$freq_output_Generic Clock 1 (GCLK1) for I2SC1: 100000000
+      _$freq_output_MCK / 8 for USART: 18750000
+      _$freq_output_Master Clock (MCK): 150000000
+      _$freq_output_Master Clock Controller (PMC_MCKR): 300000000
+      _$freq_output_PLLA Clock (PLLACK): 300000000
+      _$freq_output_Programmable Clock Controller 0 (PMC_PCK0): 12000000
+      _$freq_output_Programmable Clock Controller 1 (PMC_PCK1): 12000000
+      _$freq_output_Programmable Clock Controller 2 (PMC_PCK2): 12000000
+      _$freq_output_Programmable Clock Controller 3 (PMC_PCK3): 12000000
+      _$freq_output_Programmable Clock Controller 4 (PMC_PCK4): 12000000
+      _$freq_output_Programmable Clock Controller 5 (PMC_PCK5): 20000000
+      _$freq_output_Programmable Clock Controller 6 (PMC_PCK6): 12000000
+      _$freq_output_SysTick External Clock: 37500000
+      _$freq_output_UDPLL with Divider (MCKR UPLLDIV2): 240000000
+      _$freq_output_USB 480M Clock (UPLLCK): 480000000
+      _$freq_output_USB Clock Controller (USB_48M): 48000000
       clk_gen_cfden_enable: false
       clk_gen_fclk_oscillator: Master Clock Controller (PMC_MCKR)
       clk_gen_gclk0_arch_enable: true
@@ -714,6 +740,43 @@ drivers:
       definition: Atmel:SAME70B_Drivers:0.0.1::ATSAME70Q21B-AN::optional_signal_definition::UART2.UTXD.2
       name: UART2/UTXD/2
       label: UTXD/2
+    variant: null
+    clocks:
+      domain_group:
+        nodes:
+        - name: UART
+          input: Master Clock (MCK)
+          external: false
+          external_frequency: 0
+        configuration:
+          uart_clock_source: Master Clock (MCK)
+  UART_TERM:
+    user_label: UART_TERM
+    definition: Atmel:SAME70B_Drivers:0.0.1::ATSAME70Q21B-AN::UART3::driver_config_definition::UART::HAL:Driver:USART.Async
+    functionality: USART
+    api: HAL:Driver:USART_Async
+    configuration:
+      uart_advanced: false
+      uart_baud_rate: 115200
+      uart_channel_mode: Normal Mode
+      uart_parity: No parity
+      uart_receive_filter_enable: false
+      uart_usclks: Peripheral clock is selected
+    optional_signals:
+    - identifier: UART_TERM:URXD/3
+      pad: PD28
+      mode: Enabled
+      configuration: null
+      definition: Atmel:SAME70B_Drivers:0.0.1::ATSAME70Q21B-AN::optional_signal_definition::UART3.URXD.3
+      name: UART3/URXD/3
+      label: URXD/3
+    - identifier: UART_TERM:UTXD/3
+      pad: PD31
+      mode: Enabled
+      configuration: null
+      definition: Atmel:SAME70B_Drivers:0.0.1::ATSAME70Q21B-AN::optional_signal_definition::UART3.UTXD.3
+      name: UART3/UTXD/3
+      label: UTXD/3
     variant: null
     clocks:
       domain_group:
@@ -1117,6 +1180,12 @@ drivers:
         configuration:
           mcan_clock_source: Programmable Clock Controller 5 (PMC_PCK5)
 pads:
+  PD31:
+    name: PD31
+    definition: Atmel:SAME70B_Drivers:0.0.1::ATSAME70Q21B-AN::pad::PD31
+    mode: Peripheral IO
+    user_label: PD31
+    configuration: null
   PC31:
     name: PC31
     definition: Atmel:SAME70B_Drivers:0.0.1::ATSAME70Q21B-AN::pad::PC31
@@ -1212,6 +1281,12 @@ pads:
     definition: Atmel:SAME70B_Drivers:0.0.1::ATSAME70Q21B-AN::pad::PA27
     mode: Advanced
     user_label: PA27
+    configuration: null
+  PD28:
+    name: PD28
+    definition: Atmel:SAME70B_Drivers:0.0.1::ATSAME70Q21B-AN::pad::PD28
+    mode: Peripheral IO
+    user_label: PD28
     configuration: null
   PA5:
     name: PA5

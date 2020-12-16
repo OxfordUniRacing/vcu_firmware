@@ -234,17 +234,22 @@ int32_t _can_async_read(struct _can_async_device *const dev, struct can_message 
 int32_t _can_async_write(struct _can_async_device *const dev, struct can_message *msg)
 {
 	struct _can_tx_fifo_entry *f = NULL;
+	hri_mcan_txfqs_reg_t       put_index;
+
 	if (hri_mcan_get_TXFQS_TFQF_bit(dev->hw)) {
 		return ERR_NO_RESOURCE;
 	}
+
+	put_index = hri_mcan_read_TXFQS_TFQPI_bf(dev->hw);
+
 #ifdef CONF_CAN0_ENABLED
 	if (dev->hw == MCAN0) {
-		f = (struct _can_tx_fifo_entry *)(can0_tx_fifo + hri_mcan_read_TXFQS_TFQPI_bf(dev->hw) * CONF_CAN0_TBDS);
+		f = (struct _can_tx_fifo_entry *)(can0_tx_fifo + put_index * CONF_CAN0_TBDS);
 	}
 #endif
 #ifdef CONF_CAN1_ENABLED
 	if (dev->hw == MCAN1) {
-		f = (struct _can_tx_fifo_entry *)(can1_tx_fifo + hri_mcan_read_TXFQS_TFQPI_bf(dev->hw) * CONF_CAN1_TBDS);
+		f = (struct _can_tx_fifo_entry *)(can1_tx_fifo + put_index * CONF_CAN1_TBDS);
 	}
 #endif
 	if (f == NULL) {
@@ -276,6 +281,9 @@ int32_t _can_async_write(struct _can_async_device *const dev, struct can_message
 	} else if (msg->len <= 64) {
 		f->T1.bit.DLC = 0xF;
 	}
+
+	f->T1.bit.FDF = hri_mcan_get_CCCR_FDOE_bit(dev->hw);
+	f->T1.bit.BRS = hri_mcan_get_CCCR_BRSE_bit(dev->hw);
 
 	memcpy(f->data, msg->data, msg->len);
 

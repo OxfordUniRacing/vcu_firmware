@@ -10,6 +10,7 @@
 #include "framework/sensor/sensor.h"
 #include "framework/sensor/sensor_db.h"
 #include "app/motor_controller.h"
+#include "app/uart_term.h"
 #include "app/analog_poll.h"
 
 static void test_task(void *p) {
@@ -36,6 +37,7 @@ int main(void) {
 	NVIC_SetPriority(MCAN0_INT1_IRQn, configLIBRARY_MAX_SYSCALL_INTERRUPT_PRIORITY);
 	NVIC_SetPriority(UART1_IRQn, configLIBRARY_MAX_SYSCALL_INTERRUPT_PRIORITY);
 	NVIC_SetPriority(UART2_IRQn, configLIBRARY_MAX_SYSCALL_INTERRUPT_PRIORITY);
+	NVIC_SetPriority(UART3_IRQn, configLIBRARY_MAX_SYSCALL_INTERRUPT_PRIORITY);
 	NVIC_SetPriority(AFEC0_IRQn, configLIBRARY_MAX_SYSCALL_INTERRUPT_PRIORITY);
 	NVIC_SetPriority(AFEC1_IRQn, configLIBRARY_MAX_SYSCALL_INTERRUPT_PRIORITY);
 
@@ -50,6 +52,7 @@ int main(void) {
 	eeprom_emu_init();
 
 	mc_init();
+	term_init();
 	analog_poll_init();
 
 	usb_drive_init();

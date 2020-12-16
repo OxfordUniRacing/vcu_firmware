@@ -86,7 +86,9 @@ struct _can_tx_fifo_entry {
 		struct {
 			uint32_t : 16;     /*!< Reserved */
 			uint32_t DLC : 4;  /*!< Data Length Code */
-			uint32_t : 3;      /*!< Reserved */
+			uint32_t BRS : 1;  /*!< Bit rate Switching */
+			uint32_t FDF : 1;  /*!< FD Format */
+			uint32_t : 1;      /*!< Reserved */
 			uint32_t EFCC : 1; /*!< Event FIFO Control, Don't use EFC to avoid conflict  */
 			uint32_t MM : 8;   /*!< Message Marker */
 		} bit;

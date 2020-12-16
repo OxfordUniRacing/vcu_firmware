@@ -112,6 +112,8 @@ static struct _usart_async_device *_uart1_dev = NULL;
 
 static struct _usart_async_device *_uart2_dev = NULL;
 
+static struct _usart_async_device *_uart3_dev = NULL;
+
 static uint8_t _uart_get_irq_num(const void *const hw);
 static uint8_t _get_uart_index(const void *const hw);
 static uint8_t _uart_get_hardware_index(const void *const hw);
@@ -168,6 +170,9 @@ static void _uart_init_irq_param(const void *const hw, struct _usart_async_devic
 	}
 	if (hw == UART2) {
 		_uart2_dev = dev;
+	}
+	if (hw == UART3) {
+		_uart3_dev = dev;
 	}
 }
 
@@ -705,6 +710,14 @@ void UART1_Handler(void)
 void UART2_Handler(void)
 {
 	_uart_interrupt_handler(_uart2_dev);
+}
+
+/**
+ * \internal UART interrupt handler
+ */
+void UART3_Handler(void)
+{
+	_uart_interrupt_handler(_uart3_dev);
 }
 
 /**

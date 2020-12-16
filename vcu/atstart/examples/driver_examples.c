@@ -111,6 +111,35 @@ void UART_MC_2_example(void)
 	io_write(io, example_UART_MC_2, 12);
 }
 
+/**
+ * Example of using UART_TERM to write "Hello World" using the IO abstraction.
+ *
+ * Since the driver is asynchronous we need to use statically allocated memory for string
+ * because driver initiates transfer and then returns before the transmission is completed.
+ *
+ * Once transfer has been completed the tx_cb function will be called.
+ */
+
+static uint8_t example_UART_TERM[12] = "Hello World!";
+
+static void tx_cb_UART_TERM(const struct usart_async_descriptor *const io_descr)
+{
+	/* Transfer completed */
+}
+
+void UART_TERM_example(void)
+{
+	struct io_descriptor *io;
+
+	usart_async_register_callback(&UART_TERM, USART_ASYNC_TXC_CB, tx_cb_UART_TERM);
+	/*usart_async_register_callback(&UART_TERM, USART_ASYNC_RXC_CB, rx_cb);
+	usart_async_register_callback(&UART_TERM, USART_ASYNC_ERROR_CB, err_cb);*/
+	usart_async_get_io_descriptor(&UART_TERM, &io);
+	usart_async_enable(&UART_TERM);
+
+	io_write(io, example_UART_TERM, 12);
+}
+
 #define TASK_USART_EDBG_STACK_SIZE (300 / sizeof(portSTACK_TYPE))
 #define TASK_USART_EDBG_STACK_PRIORITY (tskIDLE_PRIORITY + 1)
 

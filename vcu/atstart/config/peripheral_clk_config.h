@@ -138,6 +138,25 @@
 #define CONF_UART2_FREQUENCY 150000000
 #endif
 
+// <h> UART Clock Settings
+// <o> UART Clock source
+// <0=> Master Clock (MCK)
+// <1=> Programmable Clock Controller 4 (PMC_PCK4)
+// <i> This defines the clock source for the UART
+// <id> uart_clock_source
+#ifndef CONF_UART3_CK_SRC
+#define CONF_UART3_CK_SRC 0
+#endif
+// </h>
+
+/**
+ * \def UART FREQUENCY
+ * \brief UART's Clock frequency
+ */
+#ifndef CONF_UART3_FREQUENCY
+#define CONF_UART3_FREQUENCY 150000000
+#endif
+
 // <h> USART Clock Settings
 // <o> USART Clock source
 
