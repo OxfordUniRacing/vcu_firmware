@@ -137,7 +137,11 @@ clean:
 	@printf "  CLEAN\n"
 	$(Q)rm -rf $(BUILD_DIR)
 
-.PHONY: all test clean patch
+cleanbuild:
+	$(MAKE) clean
+	$(MAKE) -j10 all
+
+.PHONY: all test clean patch cleanbuild
 .SECONDARY:
 
 -include $(DEPS)

@@ -93,7 +93,9 @@ void CAN_0_example(void);
  * \brief Perform system initialization, initialize pins and clocks for
  * peripherals
  */
-void system_init(void);
+void system_init(void){
+
+};
 
 #ifdef __cplusplus
 }

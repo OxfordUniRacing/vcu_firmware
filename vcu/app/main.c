@@ -23,6 +23,11 @@ static void test_task(void *p) {
 	}
 }
 
+/* Documentation for BMS CAN messages can be found at https://www.orionbms.com/manuals/utility_o2/
+ * under (Appendix B), as well as https://www.orionbms.com/downloads/misc/orionbms_obd2_pids.pdf 
+ *
+ * */
+
 int main(void) {
 	// TODO don't hardcode address
 	hri_matrix_write_CCFG_CAN0_CAN0DMABA_bf(MATRIX, (uint32_t)0x2042);
